@@ -1,8 +1,8 @@
 use std::{
     fmt::Display,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Range, Rem, RemAssign,
-        Sub, SubAssign,
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign,
+        Range, Rem, RemAssign, Sub, SubAssign,
     },
 };
 
@@ -86,7 +86,10 @@ impl<T> Vec2<T> {
     }
 
     /// Calculates the dot product of the two vectors.
-    pub fn dot<Right>(self, other: impl Into<Vec2<Right>>) -> <T::Output as Add>::Output
+    pub fn dot<Right>(
+        self,
+        other: impl Into<Vec2<Right>>,
+    ) -> <T::Output as Add>::Output
     where
         T: Mul<Right>,
         T::Output: Add,
