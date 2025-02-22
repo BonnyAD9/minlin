@@ -1,3 +1,5 @@
+/// Cast type to numeric type with smaller range. Ignore potential
+/// overflows.
 pub trait Cast<O> {
     /// Cast type to numeric type with smaller range. Ignore potential
     /// overflows.

@@ -1,3 +1,4 @@
+/// Calculate the floating point square root.
 pub trait Sqrt {
     type Output;
 
