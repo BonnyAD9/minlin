@@ -1,2 +1,4 @@
-# v0.1.0
+# CHANGELOG
+
+## v0.1.0
 - Add `Vec2`.
