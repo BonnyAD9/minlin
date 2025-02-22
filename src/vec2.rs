@@ -6,7 +6,7 @@ use std::{
     },
 };
 
-use crate::{Isqrt, Sqrt};
+use crate::{Cast, Isqrt, Sqrt};
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
 /// any tuple-like object where vector math operations are benefit.
@@ -356,6 +356,14 @@ impl<T> Vec2<T> {
         } else {
             v
         }
+    }
+
+    /// Cast components to a smaller type and ignore overflows.
+    pub fn cast<O>(self) -> Vec2<O>
+    where
+        T: Cast<O>,
+    {
+        self.map(|a| a.cast())
     }
 }
 

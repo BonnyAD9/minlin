@@ -1,4 +1,5 @@
 pub trait Isqrt {
+    /// Calculate the integer square root.
     fn isqrt(self) -> Self;
 }
 
