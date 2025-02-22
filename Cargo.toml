@@ -2,5 +2,10 @@
 name = "minlin"
 version = "0.1.0"
 edition = "2024"
+license-file = "LICENSE"
+description = "Rust library with minimal linear algebra made to be as convinient as possible."
+homepage = "https://github.com/BonnyAD9/minlin"
+repository = "https://github.com/BonnyAD9/minlin"
+readme = "README.md"
 
 [dependencies]
