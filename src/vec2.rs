@@ -10,6 +10,8 @@ use crate::{Isqrt, Sqrt};
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
 /// any tuple-like object where vector math operations are benefit.
+///
+/// It is meant to be as convinient as possible to work with in many use cases.
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq)]
 pub struct Vec2<T = usize> {
     /// The first coordinate of the vector (x, w, [0]).
