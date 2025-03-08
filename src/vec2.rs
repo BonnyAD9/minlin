@@ -6,7 +6,7 @@ use std::{
     },
 };
 
-use crate::{Cast, Isqrt, Sqrt};
+use crate::{Cast, Goniometric, Isqrt, Sqrt};
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
 /// any tuple-like object where vector math operations are benefit.
@@ -364,6 +364,29 @@ impl<T> Vec2<T> {
         T: Cast<O>,
     {
         self.map(|a| a.cast())
+    }
+
+    /// Get 2D position in 2D space with the size of self represented by 1D
+    /// container from index into the 1D container.
+    ///
+    /// E.g. if we have [`Vec`] representing 2D space with dimesions given in
+    /// this [`Vec2`], we can give index into the [`Vec`], and this will return
+    /// position of that element within the 2D space of size given by this
+    /// [`Vec2`].
+    pub fn pos_of_idx<I, R>(&self, i: I) -> Vec2<R>
+    where
+        T: Copy,
+        I: Copy + Rem<T, Output = R> + Div<T, Output = R>,
+    {
+        (i % self.x, i / self.y).into()
+    }
+
+    /// Get the angle of the vector.
+    pub fn angle(self) -> T::Output
+    where
+        T: Goniometric,
+    {
+        T::atan2(self.y, self.x)
     }
 }
 

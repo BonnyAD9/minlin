@@ -1,3 +1,5 @@
+use crate::ContainingFloat;
+
 /// Calculate the floating point square root.
 pub trait Sqrt {
     type Output;
@@ -6,16 +8,16 @@ pub trait Sqrt {
     fn sqrt(self) -> Self::Output;
 }
 
-macro_rules! impl_int_sqrt {
-    ($($i:ident),* -> $o:ident) => {
-        $(impl Sqrt for $i {
-            type Output = $o;
+impl<T> Sqrt for T
+where
+    T: ContainingFloat,
+    T::Float: Sqrt,
+{
+    type Output = <T::Float as Sqrt>::Output;
 
-            fn sqrt(self) -> Self::Output {
-                (self as $o).sqrt()
-            }
-        })*
-    };
+    fn sqrt(self) -> Self::Output {
+        self.to_float().sqrt()
+    }
 }
 
 macro_rules! impl_float_sqrt {
@@ -29,8 +31,5 @@ macro_rules! impl_float_sqrt {
         })*
     };
 }
-
-impl_int_sqrt!(u8, i8 -> f32);
-impl_int_sqrt!(u32, i32, u64, i64, usize, isize, u128, i128 -> f64);
 
 impl_float_sqrt!(f32, f64);
