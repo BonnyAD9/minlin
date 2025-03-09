@@ -2,9 +2,9 @@
 
 ## future
 - Add new methods for `Vec2`: `pos_of_idx`, `angle`, `normalized`,
-  `norzmalize`, `to` and `from_polar`.
-- Add new traits: `ContainingFloat`, `Goniometric`, `Float`, `IntoFloat` and
-  `One`.
+  `norzmalize`, `to`, `from_polar`, `idx_of_pos` and `contains`.
+- Add new traits: `ContainingFloat`, `Goniometric`, `Float`, `IntoFloat`,
+  `One` and `Zero`.
 - Add `Vec2Range`.
 - Implement `Cast` for float types.
 - Implement `Neg` for `Vec2`.

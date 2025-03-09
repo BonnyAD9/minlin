@@ -6,7 +6,9 @@ use std::{
     },
 };
 
-use crate::{Cast, Float, Goniometric, IntoFloat, Isqrt, Sqrt, Vec2Range};
+use crate::{
+    Cast, Float, Goniometric, IntoFloat, Isqrt, Sqrt, Vec2Range, Zero,
+};
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
 /// any tuple-like object where vector math operations are benefit.
@@ -369,16 +371,37 @@ impl<T> Vec2<T> {
     /// Get 2D position in 2D space with the size of self represented by 1D
     /// container from index into the 1D container.
     ///
+    /// This is inverse opration to [`Self::idx_of_pos`].
+    ///
     /// E.g. if we have [`Vec`] representing 2D space with dimesions given in
     /// this [`Vec2`], we can give index into the [`Vec`], and this will return
     /// position of that element within the 2D space of size given by this
     /// [`Vec2`].
-    pub fn pos_of_idx<I, R>(&self, i: I) -> Vec2<R>
+    pub fn pos_of_idx<I, R>(self, i: I) -> Vec2<R>
     where
-        T: Copy,
         I: Copy + Rem<T, Output = R> + Div<T, Output = R>,
     {
         (i % self.x, i / self.y).into()
+    }
+
+    /// Get index corresponding to pos to 1D container that represents 2D space
+    /// with size of this.
+    ///
+    /// This is inverse opration to [`Self::pos_of_idx`].
+    ///
+    /// E.g. if we have [`Vec`] representing 2D space with dimentions given in
+    /// this [`Vec2`], we give position within the 2D space, and this will
+    /// return index into the [`Vec`].
+    pub fn idx_of_pos(
+        self,
+        pos: impl Into<Vec2<T>>,
+    ) -> <T::Output as Add<T>>::Output
+    where
+        T: Mul,
+        T::Output: Add<T>,
+    {
+        let pos = pos.into();
+        pos.y * self.x + pos.x
     }
 
     /// Get the angle of the vector.
@@ -436,6 +459,15 @@ impl<T> Vec2<T> {
         L: Copy,
     {
         Vec2::new(angle.cos(), angle.sin()) * length
+    }
+
+    /// Check if 2D space of this size contains pos.
+    pub fn contains(&self, pos: impl Into<Vec2<T>>) -> bool
+    where
+        T: PartialOrd + Zero,
+    {
+        let pos = pos.into();
+        pos.are_both(|a| *a >= T::ZERO) && pos.x < self.x && pos.y < self.y
     }
 }
 
