@@ -1,8 +1,10 @@
+use crate::Float;
+
 /// Trait for integers. For each interger, it uses the smallest float that can
 /// contain all value of the integer loslessly.
 pub trait ContainingFloat {
     /// Best float type for this integer.
-    type Float;
+    type Float: Float;
 
     /// Convert intgerer to float.
     fn to_float(self) -> Self::Float;

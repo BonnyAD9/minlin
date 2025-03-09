@@ -1,12 +1,12 @@
 use std::{
     fmt::Display,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign,
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg,
         Range, Rem, RemAssign, Sub, SubAssign,
     },
 };
 
-use crate::{Cast, Goniometric, Isqrt, Sqrt};
+use crate::{Cast, Float, Goniometric, IntoFloat, Isqrt, Sqrt, Vec2Range};
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
 /// any tuple-like object where vector math operations are benefit.
@@ -388,6 +388,55 @@ impl<T> Vec2<T> {
     {
         T::atan2(self.y, self.x)
     }
+
+    /// Gets normalized version of the vector as float.
+    pub fn normalized<F>(self) -> Vec2<F>
+    where
+        T: IntoFloat<Float = F>,
+        T::Float: Copy
+            + Mul<Output = F>
+            + Add<Output = F>
+            + Div<Output = F>
+            + Sqrt<Output = F>,
+    {
+        let v = self.map(|a| a.into_float());
+        let len = v.len();
+        (v.x / len, v.y / len).into()
+    }
+
+    /// Normalizes this vector.
+    pub fn normalize(&mut self)
+    where
+        T: Copy
+            + Float
+            + Mul<Output = T>
+            + Add<Output = T>
+            + DivAssign
+            + Sqrt<Output = T>,
+    {
+        *self /= self.len();
+    }
+
+    /// Craetes range from this vector to the other vector.
+    pub fn to(self, other: impl Into<Vec2<T>>) -> Vec2Range<T>
+    where
+        T: Copy,
+    {
+        Vec2Range::new(self, other.into())
+    }
+
+    /// Creates vector from polar coordinates.
+    pub fn from_polar<L>(
+        angle: T,
+        length: L,
+    ) -> Vec2<<T::Output as Mul<L>>::Output>
+    where
+        T: Copy + Float + Goniometric,
+        T::Output: Mul<L>,
+        L: Copy,
+    {
+        Vec2::new(angle.cos(), angle.sin()) * length
+    }
 }
 
 impl Vec2<bool> {
@@ -534,6 +583,17 @@ impl<'a, T> IntoIterator for &'a mut Vec2<T> {
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter_mut()
+    }
+}
+
+impl<T> Neg for Vec2<T>
+where
+    T: Neg,
+{
+    type Output = Vec2<T::Output>;
+
+    fn neg(self) -> Self::Output {
+        (-self.x, -self.y).into()
     }
 }
 
