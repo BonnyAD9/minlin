@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## future
+## v0.2.0
 - Add new methods for `Vec2`: `pos_of_idx`, `angle`, `normalized`,
   `norzmalize`, `to`, `from_polar`, `idx_of_pos` and `contains`.
 - Add new traits: `ContainingFloat`, `Goniometric`, `Float`, `IntoFloat`,
