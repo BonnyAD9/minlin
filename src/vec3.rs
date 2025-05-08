@@ -1,4 +1,12 @@
-use std::{fmt::Display, ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Rem, RemAssign, Sub, SubAssign}};
+use std::{
+    fmt::Display,
+    ops::{
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg,
+        Rem, RemAssign, Sub, SubAssign,
+    },
+};
+
+use crate::{Isqrt, Sqrt};
 
 /// Represents three dimensional vector. Can be also use as color or any
 /// 3-tuple-like object where vector operations are benefit.
@@ -100,6 +108,41 @@ impl<T> Vec3<T> {
         let o = other.into();
         self.x * o.x + self.y * o.y + self.z * o.z
     }
+
+    pub fn sq_len(
+        &self,
+    ) -> <<T::Output as Add>::Output as Add<T::Output>>::Output
+    where
+        T: Copy + Mul,
+        T::Output: Add,
+        <T::Output as Add>::Output: Add<T::Output>,
+    {
+        self.dot(*self)
+    }
+
+    pub fn len(
+        &self,
+    ) -> <<<T::Output as Add>::Output as Add<T::Output>>::Output as Sqrt>::Output
+    where
+        T: Copy + Mul,
+        T::Output: Add<T::Output>,
+        <T::Output as Add>::Output: Add<T::Output>,
+        <<T::Output as Add>::Output as Add<T::Output>>::Output: Sqrt,
+    {
+        self.sq_len().sqrt()
+    }
+
+    pub fn ilen(
+        &self,
+    ) -> <<T::Output as Add>::Output as Add<T::Output>>::Output
+    where
+        T: Copy + Mul,
+        T::Output: Add<T::Output>,
+        <T::Output as Add>::Output: Add<T::Output>,
+        <<T::Output as Add>::Output as Add<T::Output>>::Output: Isqrt,
+    {
+        self.sq_len().isqrt()
+    }
 }
 
 impl<T> From<(T, T, T)> for Vec3<T> {
@@ -168,8 +211,7 @@ where
     }
 }
 
-impl<T: Display> Display for Vec3<T>
-{
+impl<T: Display> Display for Vec3<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
     }

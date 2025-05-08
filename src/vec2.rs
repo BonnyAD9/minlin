@@ -7,7 +7,7 @@ use std::{
 };
 
 use crate::{
-    Cast, Float, Goniometric, IntoFloat, Isqrt, Scale, Sqrt, Vec2Range, Zero
+    Cast, Float, Goniometric, IntoFloat, Isqrt, Scale, Sqrt, Vec2Range, Zero,
 };
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
@@ -482,7 +482,10 @@ impl<T> Vec2<T> {
 
     /// Scales the vector to different type. Floating point types are in range
     /// 0..=1 where integer types are in range MIN..=MAX.
-    pub fn scale<S>(self) -> Vec2<S> where T: Scale<S> {
+    pub fn scale<S>(self) -> Vec2<S>
+    where
+        T: Scale<S>,
+    {
         (self.x.scale(), self.y.scale()).into()
     }
 }
