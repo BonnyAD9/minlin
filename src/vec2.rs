@@ -311,6 +311,16 @@ impl<T> Vec2<T> {
         (self.y, self.x).into()
     }
 
+    /// Swaps the two components.
+    pub fn yx(self) -> Self {
+        self.swapped()
+    }
+
+    /// Identity
+    pub fn xy(self) -> Self {
+        self
+    }
+
     /// Sort the components.
     pub fn sort(&mut self)
     where
