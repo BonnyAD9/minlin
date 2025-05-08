@@ -10,6 +10,7 @@ mod vec2;
 mod vec2_range_iterator;
 mod zero;
 mod scale;
+mod vec3;
 
 pub use self::{
     cast::*, containing_float::*, float::*, goniometric::*, into_float::*,

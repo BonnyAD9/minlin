@@ -3,6 +3,7 @@
 ## future
 - Add `xy` and `yx` for `Vec2`.
 - Add new trait `Scale` and method `scale` for `Vec2`.
+- Add `Vec3`.
 
 ## v0.2.0
 - Add new methods for `Vec2`: `pos_of_idx`, `angle`, `normalized`,
