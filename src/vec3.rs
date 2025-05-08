@@ -96,6 +96,7 @@ impl<T> Vec3<T> {
         self.x = b;
     }
 
+    /// Calculate the dot product of two 3D vectors.
     pub fn dot<Right>(
         self,
         other: impl Into<Vec3<Right>>,
@@ -109,6 +110,7 @@ impl<T> Vec3<T> {
         self.x * o.x + self.y * o.y + self.z * o.z
     }
 
+    /// Calculate the square of the length of the vector.
     pub fn sq_len(
         &self,
     ) -> <<T::Output as Add>::Output as Add<T::Output>>::Output
@@ -120,6 +122,7 @@ impl<T> Vec3<T> {
         self.dot(*self)
     }
 
+    /// Calculate the length of the vector.
     pub fn len(
         &self,
     ) -> <<<T::Output as Add>::Output as Add<T::Output>>::Output as Sqrt>::Output
@@ -132,6 +135,7 @@ impl<T> Vec3<T> {
         self.sq_len().sqrt()
     }
 
+    /// Calculate the integer length of the vector.
     pub fn ilen(
         &self,
     ) -> <<T::Output as Add>::Output as Add<T::Output>>::Output
