@@ -8,14 +8,15 @@ mod one;
 mod scale;
 mod sqrt;
 mod vec2;
-mod vec2_range_iterator;
+mod vec2_range_iter;
 mod vec3;
 mod zero;
+mod vec3_range_iter;
 
 pub use self::{
     cast::*, containing_float::*, float::*, goniometric::*, into_float::*,
-    isqrt::*, one::*, scale::*, sqrt::*, vec2::*, vec2_range_iterator::*,
-    zero::*,
+    isqrt::*, one::*, scale::*, sqrt::*, vec2::*, vec2_range_iter::*,
+    zero::*, vec3_range_iter::*, vec3::*,
 };
 
 #[cfg(test)]

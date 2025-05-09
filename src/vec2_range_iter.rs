@@ -2,13 +2,13 @@ use std::ops::AddAssign;
 
 use crate::{One, Vec2};
 
-pub struct Vec2Range<T> {
+pub struct Vec2RangeIter<T> {
     start: Vec2<T>,
     end: Vec2<T>,
     x: T,
 }
 
-impl<T> Vec2Range<T>
+impl<T> Vec2RangeIter<T>
 where
     T: Copy,
 {
@@ -21,7 +21,7 @@ where
     }
 }
 
-impl<T> Vec2Range<T> {
+impl<T> Vec2RangeIter<T> {
     pub fn contains(&self, other: impl Into<Vec2<T>>) -> bool
     where
         T: Ord,
@@ -34,7 +34,7 @@ impl<T> Vec2Range<T> {
     }
 }
 
-impl<T> Iterator for Vec2Range<T>
+impl<T> Iterator for Vec2RangeIter<T>
 where
     T: Copy + AddAssign + PartialOrd + One,
 {
