@@ -7,7 +7,8 @@ use std::{
 };
 
 use crate::{
-    Cast, Float, Goniometric, IntoFloat, Isqrt, Scale, Sqrt, Vec2RangeIter, Zero,
+    Cast, Float, Goniometric, IntoFloat, Isqrt, Scale, Sqrt, Vec2RangeIter,
+    Zero,
 };
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
@@ -101,14 +102,21 @@ impl<T> Vec2<T> {
     }
 
     /// Join the components of the two vetors with the given function.
-    pub fn cjoin<R, O>(self, other: impl Into<Vec2<R>>, mut f: impl FnMut(T, R) -> O) -> Vec2<O> {
+    pub fn cjoin<R, O>(
+        self,
+        other: impl Into<Vec2<R>>,
+        mut f: impl FnMut(T, R) -> O,
+    ) -> Vec2<O> {
         let o = other.into();
         (f(self.x, o.x), f(self.y, o.y)).into()
     }
 
     /// Join the components of the vectors with the given function.
-    pub fn cjoin_assign<R>(&mut self, other: impl Into<Vec2<R>>, mut f: impl FnMut(&mut T, R))
-    {
+    pub fn cjoin_assign<R>(
+        &mut self,
+        other: impl Into<Vec2<R>>,
+        mut f: impl FnMut(&mut T, R),
+    ) {
         let o = other.into();
         f(&mut self.x, o.x);
         f(&mut self.y, o.y);
@@ -260,15 +268,19 @@ impl<T> Vec2<T> {
     where
         T: Ord,
     {
-        if self.y > self.x { &mut self.y } else { &mut self.x }
+        if self.y > self.x {
+            &mut self.y
+        } else {
+            &mut self.x
+        }
     }
 
     /// Gets index to the smallest component.
     pub fn min_idx(&self) -> usize
     where
-        T: Ord
+        T: Ord,
     {
-        if self.y < self.x { 1 } else { 1 }
+        if self.y < self.x { 1 } else { 0 }
     }
 
     /// The the smaller of the two components. If both are same, x is returned.
@@ -284,7 +296,11 @@ impl<T> Vec2<T> {
     where
         T: Ord,
     {
-        if self.y < self.x { &mut self.y } else { &mut self.x }
+        if self.y < self.x {
+            &mut self.y
+        } else {
+            &mut self.x
+        }
     }
 
     /// Checks if value `v` is in the i-e range `self.x..self.y`.
@@ -343,7 +359,10 @@ impl<T> Vec2<T> {
     }
 
     /// Maps the components of the vector to the given type.
-    pub fn convert<T2>(self) -> Vec2<T2> where T: Into<T2> {
+    pub fn convert<T2>(self) -> Vec2<T2>
+    where
+        T: Into<T2>,
+    {
         self.map(|a| a.into())
     }
 
@@ -470,7 +489,12 @@ impl<T> Vec2<T> {
     }
 
     /// Calculate the polar coordinates of the vector.
-    pub fn polar(self) -> (<<<T as Mul>::Output as Add>::Output as Sqrt>::Output, <T as Goniometric>::Output)
+    pub fn polar(
+        self,
+    ) -> (
+        <<<T as Mul>::Output as Add>::Output as Sqrt>::Output,
+        <T as Goniometric>::Output,
+    )
     where
         T: Copy + Mul + Goniometric,
         <T as Mul>::Output: Add,
@@ -480,14 +504,22 @@ impl<T> Vec2<T> {
     }
 
     /// Gets normalized version of the vector as float.
-    pub fn normalized(self) -> Vec2<<T::Float as Div<<<<T::Float as Mul>::Output as Add>::Output as Sqrt>::Output>>::Output>
+    #[allow(clippy::type_complexity)]
+    pub fn normalized(
+        self,
+    ) -> Vec2<
+        <T::Float as Div<
+            <<<T::Float as Mul>::Output as Add>::Output as Sqrt>::Output,
+        >>::Output,
+    >
     where
         T: IntoFloat,
         T::Float: Copy + Mul,
         <T::Float as Mul>::Output: Add<<T::Float as Mul>::Output>,
         <<T::Float as Mul>::Output as Add>::Output: Sqrt,
         <<<T::Float as Mul>::Output as Add>::Output as Sqrt>::Output: Copy,
-        T::Float: Div<<<<T::Float as Mul>::Output as Add>::Output as Sqrt>::Output>
+        T::Float:
+            Div<<<<T::Float as Mul>::Output as Add>::Output as Sqrt>::Output>,
     {
         let v = self.map(|a| a.into_float());
         let len = v.len();
@@ -515,10 +547,7 @@ impl<T> Vec2<T> {
     }
 
     /// Creates vector from polar coordinates.
-    pub fn from_polar<L, A>(
-        length: L,
-        angle: A,
-    ) -> Self
+    pub fn from_polar<L, A>(length: L, angle: A) -> Self
     where
         A: Copy + Float + Goniometric,
         A::Output: Mul<L, Output = T>,

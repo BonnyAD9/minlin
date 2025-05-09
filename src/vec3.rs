@@ -1,8 +1,10 @@
 use std::{
-    fmt::Display, mem, ops::{
+    fmt::Display,
+    mem,
+    ops::{
         Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg,
         Rem, RemAssign, Sub, SubAssign,
-    }
+    },
 };
 
 use crate::{Cast, Float, Goniometric, IntoFloat, Isqrt, Scale, Sqrt, Vec2};
@@ -148,14 +150,21 @@ impl<T> Vec3<T> {
     }
 
     /// Join the components of the two vectors with the given function.
-    pub fn cjoin<R, O>(self, other: impl Into<Vec3<R>>, mut f: impl FnMut(T, R) -> O) -> Vec3<O> {
+    pub fn cjoin<R, O>(
+        self,
+        other: impl Into<Vec3<R>>,
+        mut f: impl FnMut(T, R) -> O,
+    ) -> Vec3<O> {
         let o = other.into();
         (f(self.x, o.x), f(self.y, o.y), f(self.z, o.z)).into()
     }
 
     /// Join the components of the vectors with the given function.
-    pub fn cjoin_assign<R>(&mut self, other: impl Into<Vec3<R>>, mut f: impl FnMut(&mut T, R))
-    {
+    pub fn cjoin_assign<R>(
+        &mut self,
+        other: impl Into<Vec3<R>>,
+        mut f: impl FnMut(&mut T, R),
+    ) {
         let o = other.into();
         f(&mut self.x, o.x);
         f(&mut self.y, o.y);
@@ -165,7 +174,7 @@ impl<T> Vec3<T> {
     /// Do componentwise multiplication.
     pub fn cmul<Right>(self, other: impl Into<Vec3<Right>>) -> Vec3<T::Output>
     where
-        T: Mul<Right>
+        T: Mul<Right>,
     {
         self.cjoin(other, T::mul)
     }
@@ -181,7 +190,7 @@ impl<T> Vec3<T> {
     /// Componentwise division.
     pub fn cdiv<R>(self, other: impl Into<Vec3<R>>) -> Vec3<T::Output>
     where
-        T: Div<R>
+        T: Div<R>,
     {
         self.cjoin(other, T::div)
     }
@@ -189,7 +198,7 @@ impl<T> Vec3<T> {
     /// Componentwise division in place.
     pub fn cdiv_assign<R>(&mut self, other: impl Into<Vec3<R>>)
     where
-        T: DivAssign<R>
+        T: DivAssign<R>,
     {
         self.cjoin_assign(other, T::div_assign);
     }
@@ -197,7 +206,7 @@ impl<T> Vec3<T> {
     /// Componentwise remainder.
     pub fn crem<R>(self, other: impl Into<Vec3<R>>) -> Vec3<T::Output>
     where
-        T: Rem<R>
+        T: Rem<R>,
     {
         self.cjoin(other, T::rem)
     }
@@ -205,7 +214,7 @@ impl<T> Vec3<T> {
     /// Componentwise remainder in place.
     pub fn crem_assign<R>(&mut self, other: impl Into<Vec3<R>>)
     where
-        T: RemAssign<R>
+        T: RemAssign<R>,
     {
         self.cjoin_assign(other, T::rem_assign);
     }
@@ -231,7 +240,7 @@ impl<T> Vec3<T> {
     /// Checks if all the components are same.
     pub fn same(&self) -> bool
     where
-        T: PartialEq
+        T: PartialEq,
     {
         self.x == self.y && self.x == self.z
     }
@@ -243,11 +252,7 @@ impl<T> Vec3<T> {
         T: PartialEq,
     {
         if self.x == self.y {
-            if self.x == self.z {
-                1
-            } else {
-                2
-            }
+            if self.x == self.z { 1 } else { 2 }
         } else if self.x == self.z || self.y == self.z {
             2
         } else {
@@ -258,14 +263,10 @@ impl<T> Vec3<T> {
     /// Gets index to the largest of the components.
     pub fn max_idx(&self) -> usize
     where
-        T: Ord
+        T: Ord,
     {
         if self.z > self.y {
-            if self.z > self.x {
-                2
-            } else {
-                0
-            }
+            if self.z > self.x { 2 } else { 0 }
         } else if self.y > self.x {
             1
         } else {
@@ -276,7 +277,7 @@ impl<T> Vec3<T> {
     /// Gets reference to the largest component.
     pub fn max(&self) -> &T
     where
-        T: Ord
+        T: Ord,
     {
         &self[self.max_idx()]
     }
@@ -293,14 +294,10 @@ impl<T> Vec3<T> {
     /// Gets index to the smallest of the components.
     pub fn min_idx(&self) -> usize
     where
-        T: Ord
+        T: Ord,
     {
         if self.z < self.y {
-            if self.z < self.x {
-                2
-            } else {
-                0
-            }
+            if self.z < self.x { 2 } else { 0 }
         } else if self.y < self.x {
             1
         } else {
@@ -311,7 +308,7 @@ impl<T> Vec3<T> {
     /// Gets reference to the smallest component.
     pub fn min(&self) -> &T
     where
-        T: Ord
+        T: Ord,
     {
         &self[self.min_idx()]
     }
@@ -328,24 +325,16 @@ impl<T> Vec3<T> {
     /// Gets index to the middle of the components.
     pub fn mid_idx(&self) -> usize
     where
-        T: Ord
+        T: Ord,
     {
         if self.z < self.y {
             if self.z < self.x {
-                if self.y < self.x {
-                    1
-                } else {
-                    0
-                }
+                if self.y < self.x { 1 } else { 0 }
             } else {
                 2
             }
         } else if self.y < self.x {
-            if self.z < self.x {
-                2
-            } else {
-                0
-            }
+            if self.z < self.x { 2 } else { 0 }
         } else {
             1
         }
@@ -354,7 +343,7 @@ impl<T> Vec3<T> {
     /// Gets reference to the middle component.
     pub fn mid(&self) -> &T
     where
-        T: Ord
+        T: Ord,
     {
         &self[self.mid_idx()]
     }
@@ -394,7 +383,10 @@ impl<T> Vec3<T> {
     }
 
     /// Map the components to the given type
-    pub fn convert<T2>(self) -> Vec3<T2> where T: Into<T2> {
+    pub fn convert<T2>(self) -> Vec3<T2>
+    where
+        T: Into<T2>,
+    {
         self.map(|a| a.into())
     }
 
@@ -491,7 +483,7 @@ impl<T> Vec3<T> {
     /// Creates sorted version of the vector.
     pub fn sorted(self) -> Self
     where
-        T: Ord
+        T: Ord,
     {
         if self.z < self.y {
             if self.z < self.x {
@@ -515,7 +507,10 @@ impl<T> Vec3<T> {
     }
 
     /// Sorts values in the vector.
-    pub fn sort(&mut self) where T: Ord {
+    pub fn sort(&mut self)
+    where
+        T: Ord,
+    {
         if self.z < self.y {
             if self.z < self.x {
                 mem::swap(&mut self.z, &mut self.x);
@@ -534,7 +529,10 @@ impl<T> Vec3<T> {
     }
 
     /// Cost components to a smaller type and ignore overflows.
-    pub fn cast<O>(self) -> Vec3<O> where T: Cast<O> {
+    pub fn cast<O>(self) -> Vec3<O>
+    where
+        T: Cast<O>,
+    {
         self.map(|a| a.cast())
     }
 
@@ -552,7 +550,8 @@ impl<T> Vec3<T> {
         T: Copy + Mul,
         T::Output: Copy,
         I: Copy + Div<T::Output, Output = R> + Rem<T::Output>,
-        <I as Rem<T::Output>>::Output: Copy + Rem<T, Output = R> + Div<T, Output = R>,
+        <I as Rem<T::Output>>::Output:
+            Copy + Rem<T, Output = R> + Div<T, Output = R>,
     {
         let xy = self.x * self.y;
         let i2 = i % xy;
@@ -567,12 +566,20 @@ impl<T> Vec3<T> {
     /// E.g. if we have [`Vec`] representing 3D space with dimentions given in
     /// this [`Vec3`], we give position within the 3D space, and this will
     /// return index into the [`Vec`].
-    pub fn idx_of_pos<R>(self, pos: impl Into<Vec3<R>>) -> <<<<T as Mul>::Output as Mul<R>>::Output as Add<<T as Mul<R>>::Output>>::Output as Add<R>>::Output
+    #[allow(clippy::type_complexity)]
+    pub fn idx_of_pos<R>(
+        self,
+        pos: impl Into<Vec3<R>>
+    ) -> <<<<T as Mul>::Output as Mul<R>>::Output as Add<
+            <T as Mul<R>>::Output>
+        >::Output as Add<R>>::Output
     where
         T: Copy + Mul + Mul<R>,
         <T as Mul>::Output: Mul<R>,
         <<T as Mul>::Output as Mul<R>>::Output: Add<<T as Mul<R>>::Output>,
-        <<<T as Mul>::Output as Mul<R>>::Output as Add<<T as Mul<R>>::Output>>::Output: Add<R>,
+        <<<T as Mul>::Output as Mul<R>>::Output as Add<
+            <T as Mul<R>>::Output
+        >>::Output: Add<R>,
     {
         let p = pos.into();
         self.x * self.y * p.z + self.x * p.y + p.x
@@ -645,48 +652,102 @@ impl<T> Vec3<T> {
     }
 
     /// Calculate polar coordinates with X being the polar axis.
-    pub fn polar_x(self) -> (<<<<T as Mul>::Output as Add>::Output as Add<<T as Mul>::Output>>::Output as Sqrt>::Output, <T as Goniometric>::Output, <T as Goniometric>::Output)
+    #[allow(clippy::type_complexity)]
+    pub fn polar_x(
+        self
+    ) -> (
+            <<<<T as Mul>::Output as Add>::Output as Add<
+                <T as Mul>::Output>
+            >::Output as Sqrt>::Output,
+            <T as Goniometric>::Output,
+            <T as Goniometric>::Output,
+        )
     where
         T: Copy + Mul + Goniometric,
         <T as Mul>::Output: Add<<T as Mul>::Output>,
-        <<T as Mul>::Output as Add>::Output: Add<<T as Mul>::Output> + Sqrt<Output = T>,
-        <<<T as Mul>::Output as Add>::Output as Add<<T as Mul>::Output>>::Output: Sqrt,
+        <<T as Mul>::Output as Add>::Output:
+            Add<<T as Mul>::Output> + Sqrt<Output = T>,
+        <<<T as Mul>::Output as Add>::Output as Add<
+            <T as Mul>::Output>
+        >::Output: Sqrt,
     {
         (self.len(), self.angle_x(), self.yz().angle())
     }
 
     /// Calculate polar coordinates with Y being the polar axis.
-    pub fn polar_y(self) -> (<<<<T as Mul>::Output as Add>::Output as Add<<T as Mul>::Output>>::Output as Sqrt>::Output, <T as Goniometric>::Output, <T as Goniometric>::Output)
+    #[allow(clippy::type_complexity)]
+    pub fn polar_y(
+        self
+    ) -> (
+            <<<<T as Mul>::Output as Add>::Output as Add<
+                <T as Mul>::Output>
+            >::Output as Sqrt>::Output,
+            <T as Goniometric>::Output,
+            <T as Goniometric>::Output,
+        )
     where
         T: Copy + Mul + Goniometric,
         <T as Mul>::Output: Add<<T as Mul>::Output>,
-        <<T as Mul>::Output as Add>::Output: Add<<T as Mul>::Output> + Sqrt<Output = T>,
-        <<<T as Mul>::Output as Add>::Output as Add<<T as Mul>::Output>>::Output: Sqrt,
+        <<T as Mul>::Output as Add>::Output:
+            Add<<T as Mul>::Output> + Sqrt<Output = T>,
+        <<<T as Mul>::Output as Add>::Output as Add<
+            <T as Mul>::Output
+        >>::Output: Sqrt,
     {
         (self.len(), self.angle_y(), self.zx().angle())
     }
 
     /// Calculate polar coordinates with Z being the polar axis.
-    pub fn polar_z(self) -> (<<<<T as Mul>::Output as Add>::Output as Add<<T as Mul>::Output>>::Output as Sqrt>::Output, <T as Goniometric>::Output, <T as Goniometric>::Output)
+    #[allow(clippy::type_complexity)]
+    pub fn polar_z(
+        self
+    ) -> (
+            <<<<T as Mul>::Output as Add>::Output as Add<
+                <T as Mul>::Output>
+            >::Output as Sqrt>::Output,
+            <T as Goniometric>::Output,
+            <T as Goniometric>::Output,
+        )
     where
         T: Copy + Mul + Goniometric,
         <T as Mul>::Output: Add<<T as Mul>::Output>,
-        <<T as Mul>::Output as Add>::Output: Add<<T as Mul>::Output> + Sqrt<Output = T>,
-        <<<T as Mul>::Output as Add>::Output as Add<<T as Mul>::Output>>::Output: Sqrt,
+        <<T as Mul>::Output as Add>::Output:
+            Add<<T as Mul>::Output> + Sqrt<Output = T>,
+        <<<T as Mul>::Output as Add>::Output as Add<
+            <T as Mul>::Output>
+        >::Output: Sqrt,
     {
         (self.len(), self.angle_z(), self.xy().angle())
     }
 
     /// Get normalized version of the vector.
-    pub fn normalized(self) -> Vec2<<T::Float as Div<<<<<T::Float as Mul>::Output as Add>::Output as Add<<T::Float as Mul>::Output>>::Output as Sqrt>::Output>>::Output>
+    #[allow(clippy::type_complexity)]
+    pub fn normalized(
+        self,
+    ) -> Vec2<
+        <T::Float as Div<
+            <<<<T::Float as Mul>::Output as Add>::Output as Add<
+                <T::Float as Mul>::Output,
+            >>::Output as Sqrt>::Output,
+        >>::Output,
+    >
     where
         T: IntoFloat,
         T::Float: Copy + Mul,
         <T::Float as Mul>::Output: Add,
-        <<T::Float as Mul>::Output as Add>::Output: Add<<T::Float as Mul>::Output>,
-        <<<T::Float as Mul>::Output as Add>::Output as Add<<T::Float as Mul>::Output>>::Output: Sqrt,
-        <<<<T::Float as Mul>::Output as Add>::Output as Add<<T::Float as Mul>::Output>>::Output as Sqrt>::Output: Copy,
-        T::Float: Div<<<<<T::Float as Mul>::Output as Add>::Output as Add<<T::Float as Mul>::Output>>::Output as Sqrt>::Output>,
+        <<T::Float as Mul>::Output as Add>::Output:
+            Add<<T::Float as Mul>::Output>,
+        <<<T::Float as Mul>::Output as Add>::Output as Add<
+            <T::Float as Mul>::Output,
+        >>::Output: Sqrt,
+        <<<<T::Float as Mul>::Output as Add>::Output as Add<
+            <T::Float as Mul>::Output,
+        >>::Output as Sqrt>::Output: Copy,
+        T::Float: Div<
+            <<<<T::Float as Mul>::Output as Add>::Output as Add<
+                <T::Float as Mul>::Output,
+            >>::Output as Sqrt>::Output,
+        >,
     {
         let v = self.map(|a| a.into_float());
         let len = v.len();
@@ -700,8 +761,12 @@ impl<T> Vec3<T> {
         T::Output: Add,
         <T::Output as Add>::Output: Add<T::Output>,
         <<T::Output as Add>::Output as Add<T::Output>>::Output: Sqrt,
-        <<<T::Output as Add>::Output as Add<T::Output>>::Output as Sqrt>::Output: Copy,
-        T: DivAssign<<<<T::Output as Add>::Output as Add<T::Output>>::Output as Sqrt>::Output>,
+        <<<T::Output as Add>::Output as Add<
+            T::Output
+        >>::Output as Sqrt>::Output: Copy,
+        T: DivAssign<<<<T::Output as Add>::Output as Add<
+            T::Output
+        >>::Output as Sqrt>::Output>,
     {
         *self /= self.len();
     }
@@ -719,8 +784,9 @@ impl<T> Vec3<T> {
         (
             length * polar.cos(),
             length * ps * azimuth.cos(),
-            length * ps * azimuth.sin()
-        ).into()
+            length * ps * azimuth.sin(),
+        )
+            .into()
     }
 
     /// Creates vector from polar coodinate with polar axis Y.
@@ -737,7 +803,8 @@ impl<T> Vec3<T> {
             length * ps * azimuth.sin(),
             length * polar.cos(),
             length * ps * azimuth.cos(),
-        ).into()
+        )
+            .into()
     }
 
     /// Creates vector from polar coodinate with polar axis X.
@@ -754,20 +821,24 @@ impl<T> Vec3<T> {
             length * ps * azimuth.cos(),
             length * ps * azimuth.sin(),
             length * polar.cos(),
-        ).into()
+        )
+            .into()
     }
 
     /// Scales the vector to different type. Floating point types are in range
     /// 0..=1 where integer types are in range MIN..=MAX.
     pub fn scale<S>(self) -> Vec3<S>
     where
-        T: Scale<S>
+        T: Scale<S>,
     {
         self.map(|a| a.scale())
     }
 
     /// Calculates the cross product of two vectors.
-    pub fn cross<R>(self, other: impl Into<Vec3<R>>) -> Vec3<<T::Output as Sub>::Output>
+    pub fn cross<R>(
+        self,
+        other: impl Into<Vec3<R>>,
+    ) -> Vec3<<T::Output as Sub>::Output>
     where
         T: Copy + Mul<R>,
         T::Output: Sub,
@@ -778,7 +849,8 @@ impl<T> Vec3<T> {
             self.y * z - self.z * y,
             self.z * x - self.x * z,
             self.x * y - self.y * x,
-        ).into()
+        )
+            .into()
     }
 }
 
@@ -813,7 +885,7 @@ impl<T> Vec3<&T> {
     /// Clones the components.
     pub fn cloned(self) -> Vec3<T>
     where
-        T: Clone
+        T: Clone,
     {
         self.map(|a| a.clone())
     }
@@ -821,7 +893,7 @@ impl<T> Vec3<&T> {
     /// Copies the components.
     pub fn copied(self) -> Vec3<T>
     where
-        T: Copy
+        T: Copy,
     {
         self.map(|a| *a)
     }

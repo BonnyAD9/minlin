@@ -9,7 +9,10 @@ pub struct Vec3RangeIter<T> {
 }
 
 impl<T> Vec3RangeIter<T> {
-    pub fn new(start: Vec3<T>, end: Vec3<T>) -> Self where T: Copy {
+    pub fn new(start: Vec3<T>, end: Vec3<T>) -> Self
+    where
+        T: Copy,
+    {
         Self {
             xy: start.xy(),
             start,
@@ -17,7 +20,10 @@ impl<T> Vec3RangeIter<T> {
         }
     }
 
-    pub fn contains(&self, other: impl Into<Vec3<T>>) -> bool where T: Ord {
+    pub fn contains(&self, other: impl Into<Vec3<T>>) -> bool
+    where
+        T: Ord,
+    {
         let Vec3 { x, y, z } = other.into();
         x >= self.start.x
             && x < self.end.x
