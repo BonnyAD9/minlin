@@ -6,10 +6,12 @@
 - Add new trait `Scale` and method `scale` for `Vec2`.
 - Add new traits `LargeType` and `NormalLimits` and range conversion methods to
   `Vec2`.
+- Add trait `Two`.
 - Add `to_polar` for `Vec2`.
 - Add `Vec2::ZERO`.
 - Add `cabs` to `Vec2`.
 - Add `Vec3`.
+- Add basic `Vec4`.
 
 ### Changes
 - Normalization functions for `Vec2` are now more generic.
