@@ -2,11 +2,15 @@ use std::{
     fmt::Display,
     mem,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, RangeInclusive, Rem, RemAssign, Sub, SubAssign
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg,
+        Rem, RemAssign, Sub, SubAssign,
     },
 };
 
-use crate::{Cast, Float, Goniometric, IntoFloat, Isqrt, LargeType, NormalLimits, Scale, Sqrt, Vec2, Zero};
+use crate::{
+    Cast, Float, Goniometric, IntoFloat, Isqrt, LargeType, NormalLimits,
+    Scale, Sqrt, Vec2, Zero,
+};
 
 /// Represents three dimensional vector. Can be also use as color or any
 /// 3-tuple-like object where vector operations are benefit.
@@ -853,7 +857,10 @@ impl<T> Vec3<T> {
     }
 
     /// Creates RGB color for 332 format.
-    pub fn from_332(c: u8) -> Self where u8: Scale<T> {
+    pub fn from_332(c: u8) -> Self
+    where
+        u8: Scale<T>,
+    {
         let mut r = c >> 5;
         r = (r << 5) | (r << 2) | (r >> 1);
 
@@ -868,7 +875,10 @@ impl<T> Vec3<T> {
     }
 
     /// Converts this color to rgb 332 color.
-    pub fn to_332(self) -> u8 where T: Scale<u8> {
+    pub fn to_332(self) -> u8
+    where
+        T: Scale<u8>,
+    {
         let (r, g, b) = self.scale().into();
         (r & 0b11100000) | ((g >> 3) & 0b11100) | (b >> 6)
     }
@@ -877,16 +887,28 @@ impl<T> Vec3<T> {
     pub fn change_range(self, ss: T, se: T, ds: T, de: T) -> Vec3<T>
     where
         T: LargeType + Copy + Sub<Output = T>,
-        T::Large: Add<Output = T::Large> + Sub<Output = T::Large> + Mul<Output = T::Large> + Div<Output = T::Large>,
+        T::Large: Add<Output = T::Large>
+            + Sub<Output = T::Large>
+            + Mul<Output = T::Large>
+            + Div<Output = T::Large>,
     {
-        self.map(|a| T::from_large((a.to_large() - ss.to_large()) * (de - ds).to_large() / (se - ss).to_large() + ds.to_large()))
+        self.map(|a| {
+            T::from_large(
+                (a.to_large() - ss.to_large()) * (de - ds).to_large()
+                    / (se - ss).to_large()
+                    + ds.to_large(),
+            )
+        })
     }
 
     /// Transform values from normal range to the given range.
     pub fn norm_to_range(self, s: T, e: T) -> Vec3<T>
     where
         T: LargeType + Copy + NormalLimits + Sub<Output = T>,
-        T::Large: Add<Output = T::Large> + Sub<Output = T::Large> + Mul<Output = T::Large> + Div<Output = T::Large>,
+        T::Large: Add<Output = T::Large>
+            + Sub<Output = T::Large>
+            + Mul<Output = T::Large>
+            + Div<Output = T::Large>,
     {
         self.change_range(T::NORM_MIN, T::NORM_MAX, s, e)
     }
@@ -895,9 +917,20 @@ impl<T> Vec3<T> {
     pub fn to_norm_range(self, s: T, e: T) -> Vec3<T>
     where
         T: LargeType + Copy + NormalLimits + Sub<Output = T>,
-        T::Large: Add<Output = T::Large> + Sub<Output = T::Large> + Mul<Output = T::Large> + Div<Output = T::Large>,
+        T::Large: Add<Output = T::Large>
+            + Sub<Output = T::Large>
+            + Mul<Output = T::Large>
+            + Div<Output = T::Large>,
     {
         self.change_range(s, e, T::NORM_MIN, T::NORM_MAX)
+    }
+
+    /// Calculate the absolute value of each component.
+    pub fn cabs(self) -> Vec3<T>
+    where
+        T: PartialOrd + Zero + Neg<Output = T>,
+    {
+        self.map(|a| if a < T::ZERO { -a } else { a })
     }
 }
 
@@ -948,7 +981,11 @@ impl<T> Vec3<&T> {
 
 impl<T: Zero> Vec3<T> {
     /// 3D vectors with all components set to zero.
-    pub const ZERO: Vec3<T> = Vec3 { x: T::ZERO, y: T::ZERO, z: T::ZERO };
+    pub const ZERO: Vec3<T> = Vec3 {
+        x: T::ZERO,
+        y: T::ZERO,
+        z: T::ZERO,
+    };
 }
 
 impl<T> From<(T, T, T)> for Vec3<T> {

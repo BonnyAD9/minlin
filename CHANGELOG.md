@@ -8,6 +8,7 @@
   `Vec2`.
 - Add `to_polar` for `Vec2`.
 - Add `Vec2::ZERO`.
+- Add `cabs` to `Vec2`.
 - Add `Vec3`.
 
 ### Changes
