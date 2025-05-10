@@ -2,6 +2,7 @@ use std::ops::{Add, Div};
 
 use crate::{Two, Vec2};
 
+/// Four dimensional vector or any 4-tuple-like object (e.g. rectangle).
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq)]
 pub struct Vec4<T = usize> {
     pub x: T,
