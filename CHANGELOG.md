@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## future
+## v0.3.0
 ## New features
 - Add `xy` and `yx` for `Vec2`.
 - Add new trait `Scale` and method `scale` for `Vec2`.
