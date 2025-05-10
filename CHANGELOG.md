@@ -1,9 +1,17 @@
 # CHANGELOG
 
 ## future
+## New features
 - Add `xy` and `yx` for `Vec2`.
 - Add new trait `Scale` and method `scale` for `Vec2`.
+- Add `to_polar` for `Vec2`.
 - Add `Vec3`.
+
+### Changes
+- Normalization functions for `Vec2` are now more generic.
+
+### Breaking changes
+- `Vec2::from_polar` now takes the arguments in different order.
 
 ## v0.2.0
 - Add new methods for `Vec2`: `pos_of_idx`, `angle`, `normalized`,
