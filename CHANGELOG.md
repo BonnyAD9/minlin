@@ -5,6 +5,7 @@
 - Add `xy` and `yx` for `Vec2`.
 - Add new trait `Scale` and method `scale` for `Vec2`.
 - Add `to_polar` for `Vec2`.
+- Add `Vec2::ZERO`.
 - Add `Vec3`.
 
 ### Changes

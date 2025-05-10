@@ -615,6 +615,10 @@ impl<T> Vec2<&T> {
     }
 }
 
+impl<T: Zero> Vec2<T> {
+    pub const ZERO: Vec2<T> = Vec2 { x: T::ZERO, y: T::ZERO };
+}
+
 impl<T> From<(T, T)> for Vec2<T> {
     fn from((x, y): (T, T)) -> Self {
         Self { x, y }

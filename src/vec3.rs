@@ -7,7 +7,7 @@ use std::{
     },
 };
 
-use crate::{Cast, Float, Goniometric, IntoFloat, Isqrt, Scale, Sqrt, Vec2};
+use crate::{Cast, Float, Goniometric, IntoFloat, Isqrt, Scale, Sqrt, Vec2, Zero};
 
 /// Represents three dimensional vector. Can be also use as color or any
 /// 3-tuple-like object where vector operations are benefit.
@@ -897,6 +897,10 @@ impl<T> Vec3<&T> {
     {
         self.map(|a| *a)
     }
+}
+
+impl<T: Zero> Vec3<T> {
+    pub const ZERO: Vec3<T> = Vec3 { x: T::ZERO, y: T::ZERO, z: T::ZERO };
 }
 
 impl<T> From<(T, T, T)> for Vec3<T> {
