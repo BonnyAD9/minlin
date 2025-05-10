@@ -7,8 +7,7 @@ use std::{
 };
 
 use crate::{
-    Cast, Float, Goniometric, IntoFloat, Isqrt, Scale, Sqrt, Vec2RangeIter,
-    Zero,
+    Cast, Float, Goniometric, IntoFloat, Isqrt, LargeType, NormalLimits, Scale, Sqrt, Vec2RangeIter, Zero
 };
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
@@ -573,6 +572,33 @@ impl<T> Vec2<T> {
     {
         (self.x.scale(), self.y.scale()).into()
     }
+
+    /// Change the range of values from `ss..=se` to `ds..=de`.
+    pub fn change_range(self, ss: T, se: T, ds: T, de: T) -> Vec2<T>
+    where
+        T: LargeType + Copy + Sub<Output = T>,
+        T::Large: Add<Output = T::Large> + Sub<Output = T::Large> + Mul<Output = T::Large> + Div<Output = T::Large>,
+    {
+        self.map(|a| T::from_large((a.to_large() - ss.to_large()) * (de - ds).to_large() / (se - ss).to_large() + ds.to_large()))
+    }
+
+    /// Transform values from normal range to the given range.
+    pub fn norm_to_range(self, s: T, e: T) -> Vec2<T>
+    where
+        T: LargeType + Copy + NormalLimits + Sub<Output = T>,
+        T::Large: Add<Output = T::Large> + Sub<Output = T::Large> + Mul<Output = T::Large> + Div<Output = T::Large>,
+    {
+        self.change_range(T::NORM_MIN, T::NORM_MAX, s, e)
+    }
+
+    /// Transform values from the given range to normal range.
+    pub fn to_norm_range(self, s: T, e: T) -> Vec2<T>
+    where
+        T: LargeType + Copy + NormalLimits + Sub<Output = T>,
+        T::Large: Add<Output = T::Large> + Sub<Output = T::Large> + Mul<Output = T::Large> + Div<Output = T::Large>,
+    {
+        self.change_range(s, e, T::NORM_MIN, T::NORM_MAX)
+    }
 }
 
 impl Vec2<bool> {
@@ -616,6 +642,7 @@ impl<T> Vec2<&T> {
 }
 
 impl<T: Zero> Vec2<T> {
+    /// 2D vectors with all components set to zero.
     pub const ZERO: Vec2<T> = Vec2 { x: T::ZERO, y: T::ZERO };
 }
 

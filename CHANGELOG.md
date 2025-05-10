@@ -4,6 +4,8 @@
 ## New features
 - Add `xy` and `yx` for `Vec2`.
 - Add new trait `Scale` and method `scale` for `Vec2`.
+- Add new traits `LargeType` and `NormalLimits` and range conversion methods to
+  `Vec2`.
 - Add `to_polar` for `Vec2`.
 - Add `Vec2::ZERO`.
 - Add `Vec3`.
