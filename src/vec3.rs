@@ -1158,6 +1158,7 @@ macro_rules! op_assign_single {
             fn $fn(&mut self, rhs: Right) {
                 self.x.$fn(rhs);
                 self.y.$fn(rhs);
+                self.z.$fn(rhs);
             }
         }
     };

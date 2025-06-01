@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## future
+### Fixes
+- Fix `*=`, `/=` and `%=` for `Vec3`.
+
 ## v0.3.0
 ## New features
 - Add `xy` and `yx` for `Vec2`.
