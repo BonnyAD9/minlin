@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## future
+## v0.3.1
 ### Fixes
 - Fix `*=`, `/=` and `%=` for `Vec3`.
 
