@@ -1,7 +1,8 @@
 use std::{
     fmt::Display,
     ops::{
-        Add, AddAssign, Bound, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Range, RangeBounds, Rem, RemAssign, Sub, SubAssign
+        Add, AddAssign, Bound, Div, DivAssign, Index, IndexMut, Mul,
+        MulAssign, Neg, Range, RangeBounds, Rem, RemAssign, Sub, SubAssign,
     },
 };
 
@@ -622,7 +623,7 @@ impl<T> Vec2<T> {
     {
         self.map(|a| if a < T::ZERO { -a } else { a })
     }
-    
+
     /// Create range from this. The range will iterate over its range of values.
     pub fn range(self) -> crate::Range<T> {
         self.into()
@@ -691,7 +692,10 @@ impl<T> From<[T; 2]> for Vec2<T> {
 
 impl<T> From<Range<T>> for Vec2<T> {
     fn from(value: Range<T>) -> Self {
-        Self { x: value.start, y: value.end }
+        Self {
+            x: value.start,
+            y: value.end,
+        }
     }
 }
 
