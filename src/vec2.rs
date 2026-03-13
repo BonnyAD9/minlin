@@ -1,8 +1,7 @@
 use std::{
     fmt::Display,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg,
-        Range, Rem, RemAssign, Sub, SubAssign,
+        Add, AddAssign, Bound, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Range, RangeBounds, Rem, RemAssign, Sub, SubAssign
     },
 };
 
@@ -623,6 +622,11 @@ impl<T> Vec2<T> {
     {
         self.map(|a| if a < T::ZERO { -a } else { a })
     }
+    
+    /// Create range from this. The range will iterate over its range of values.
+    pub fn range(self) -> crate::Range<T> {
+        self.into()
+    }
 }
 
 impl Vec2<bool> {
@@ -685,6 +689,12 @@ impl<T> From<[T; 2]> for Vec2<T> {
     }
 }
 
+impl<T> From<Range<T>> for Vec2<T> {
+    fn from(value: Range<T>) -> Self {
+        Self { x: value.start, y: value.end }
+    }
+}
+
 impl<T> From<Vec2<T>> for (T, T) {
     fn from(value: Vec2<T>) -> Self {
         (value.x, value.y)
@@ -700,6 +710,16 @@ impl<T> From<Vec2<T>> for [T; 2] {
 impl<T> From<Vec2<T>> for Range<T> {
     fn from(value: Vec2<T>) -> Self {
         value.x..value.y
+    }
+}
+
+impl<T> RangeBounds<T> for Vec2<T> {
+    fn start_bound(&self) -> Bound<&T> {
+        Bound::Included(&self.x)
+    }
+
+    fn end_bound(&self) -> Bound<&T> {
+        Bound::Excluded(&self.y)
     }
 }
 
