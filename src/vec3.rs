@@ -8,7 +8,7 @@ use std::{
 };
 
 use crate::{
-    Cast, Float, Goniometric, IntoFloat, Isqrt, LargeType, NormalLimits,
+    CastExt, Float, Goniometric, IntoFloat, Isqrt, LargeType, NormalLimits,
     Scale, Sqrt, Vec2, Zero,
 };
 
@@ -48,11 +48,6 @@ impl<T> Vec3<T> {
     pub fn iter_mut(&mut self) -> std::array::IntoIter<&mut T, 3> {
         let r: [_; 3] = self.as_mut().into();
         r.into_iter()
-    }
-
-    /// Map the individual components.
-    pub fn map<R>(self, mut f: impl FnMut(T) -> R) -> Vec3<R> {
-        (f(self.x), f(self.y), f(self.z)).into()
     }
 
     /// Get the red value. Alias to the first coordinate (x, [0]).
@@ -385,14 +380,6 @@ impl<T> Vec3<T> {
         f(&self.x) as usize + f(&self.y) as usize + f(&self.z) as usize
     }
 
-    /// Map the components to the given type
-    pub fn convert<T2>(self) -> Vec3<T2>
-    where
-        T: Into<T2>,
-    {
-        self.map(|a| a.into())
-    }
-
     /// Identity.
     pub fn xyz(self) -> Self {
         self
@@ -529,14 +516,6 @@ impl<T> Vec3<T> {
                 mem::swap(&mut self.z, &mut self.y);
             }
         }
-    }
-
-    /// Cost components to a smaller type and ignore overflows.
-    pub fn cast<O>(self) -> Vec3<O>
-    where
-        T: Cast<O>,
-    {
-        self.map(|a| a.cast())
     }
 
     /// Get 3D position in 3D space with the size of self represented by 1D

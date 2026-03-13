@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## future
+### Breaking changes
+- `Vec2::in_range` has been renamed to `Vec2::contains`.
+- `Vec2::contains` has been renamed to `Vec2::size_contains`.
+- Methods `map`, `contains`, `cast` and `convert` on `Vec2` have been moved to
+  trait implementation.
+- Methods `map`, `cast` and `convert` on `Vec3` have been moved to trait
+  implementation.
+
+### New features
+- Range operations `join`, `valid_range_or_empty`, `intersect`, `intersects`,
+  `touches`, `join_gap`, `sub_range`, `sub_range_gap`, `sym_sub_range` for
+  `Vec2`.
+- New traits `TwoComponent`, `CastExt` and `RangeExt` that can add methods to
+  types outside this crate. They are notably implemented to `Range<T>`.
+
 ## v0.3.1
 ### Fixes
 - Fix `*=`, `/=` and `%=` for `Vec3`.

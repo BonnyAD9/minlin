@@ -7,7 +7,7 @@ use std::{
 };
 
 use crate::{
-    Cast, Float, Goniometric, IntoFloat, Isqrt, LargeType, NormalLimits,
+    CastExt, Float, Goniometric, IntoFloat, Isqrt, LargeType, NormalLimits,
     Scale, Sqrt, Vec2RangeIter, Zero,
 };
 
@@ -303,19 +303,6 @@ impl<T> Vec2<T> {
         }
     }
 
-    /// Checks if value `v` is in the i-e range `self.x..self.y`.
-    pub fn in_range(&self, v: &T) -> bool
-    where
-        T: Ord,
-    {
-        v >= &self.x && v < &self.y
-    }
-
-    /// Maps the individual components.
-    pub fn map<R>(self, mut f: impl FnMut(T) -> R) -> Vec2<R> {
-        (f(self.x), f(self.y)).into()
-    }
-
     /// Converts vector reference to vector of reference.
     pub fn as_ref(&self) -> Vec2<&T> {
         (&self.x, &self.y).into()
@@ -356,14 +343,6 @@ impl<T> Vec2<T> {
     pub fn iter_mut(&mut self) -> std::array::IntoIter<&mut T, 2> {
         let r: [_; 2] = self.as_mut().into();
         r.into_iter()
-    }
-
-    /// Maps the components of the vector to the given type.
-    pub fn convert<T2>(self) -> Vec2<T2>
-    where
-        T: Into<T2>,
-    {
-        self.map(|a| a.into())
     }
 
     /// Swaps the two components.
@@ -433,14 +412,6 @@ impl<T> Vec2<T> {
         } else {
             v
         }
-    }
-
-    /// Cast components to a smaller type and ignore overflows.
-    pub fn cast<O>(self) -> Vec2<O>
-    where
-        T: Cast<O>,
-    {
-        self.map(|a| a.cast())
     }
 
     /// Get 2D position in 2D space with the size of self represented by 1D
@@ -557,7 +528,7 @@ impl<T> Vec2<T> {
     }
 
     /// Check if 2D space of this size contains pos.
-    pub fn contains(&self, pos: impl Into<Vec2<T>>) -> bool
+    pub fn size_contains(&self, pos: impl Into<Vec2<T>>) -> bool
     where
         T: PartialOrd + Zero,
     {
@@ -625,7 +596,7 @@ impl<T> Vec2<T> {
     }
 
     /// Create range from this. The range will iterate over its range of values.
-    pub fn range(self) -> crate::Range<T> {
+    pub fn range(self) -> Range<T> {
         self.into()
     }
 }
