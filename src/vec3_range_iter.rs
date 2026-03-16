@@ -2,6 +2,7 @@ use std::ops::AddAssign;
 
 use crate::{One, Vec2, Vec3};
 
+/// Iterator over 3D volume.
 pub struct Vec3RangeIter<T> {
     start: Vec3<T>,
     end: Vec3<T>,
@@ -9,6 +10,7 @@ pub struct Vec3RangeIter<T> {
 }
 
 impl<T> Vec3RangeIter<T> {
+    /// Create new iterator over 3D volume.
     pub fn new(start: Vec3<T>, end: Vec3<T>) -> Self
     where
         T: Copy,
@@ -20,6 +22,7 @@ impl<T> Vec3RangeIter<T> {
         }
     }
 
+    /// Check whether the remaining volume contains the given position.
     pub fn contains(&self, other: impl Into<Vec3<T>>) -> bool
     where
         T: Ord,

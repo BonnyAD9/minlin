@@ -8,13 +8,19 @@
   trait implementation.
 - Methods `map`, `cast` and `convert` on `Vec3` have been moved to trait
   implementation.
+- Method `rect_center` on `Vec4` has been moved to trait implementation.
 
 ### New features
 - Range operations `join`, `valid_range_or_empty`, `intersect`, `intersects`,
   `touches`, `join_gap`, `sub_range`, `sub_range_gap`, `sym_sub_range` for
   `Vec2`.
-- New traits `TwoComponent`, `CastExt` and `RangeExt` that can add methods to
+- New traits `TwoComponent`, `MapExt` and `RangeExt` that can add methods to
   types outside this crate. They are notably implemented to `Range<T>`.
+- New trait `RectExt`.
+- New type `Rect`.
+- New type `Padding`.
+- Implement arithmetic on `Vec4`.
+- Add checked and saturating arithmetic.
 
 ## v0.3.1
 ### Fixes

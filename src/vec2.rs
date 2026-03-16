@@ -1,4 +1,5 @@
 use std::{
+    cmp::Ordering,
     fmt::Display,
     ops::{
         Add, AddAssign, Bound, Div, DivAssign, Index, IndexMut, Mul,
@@ -7,8 +8,8 @@ use std::{
 };
 
 use crate::{
-    CastExt, Float, Goniometric, IntoFloat, Isqrt, LargeType, NormalLimits,
-    Scale, Sqrt, Vec2RangeIter, Zero,
+    Checked, Float, Goniometric, IntoFloat, Isqrt, LargeType, MapExt,
+    NormalLimits, Scale, Sqrt, Vec2RangeIter, Zero,
 };
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
@@ -25,7 +26,7 @@ pub struct Vec2<T = usize> {
 
 impl<T> Vec2<T> {
     /// Creates new two dimensional vector from its components.
-    pub fn new(x: T, y: T) -> Self {
+    pub const fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
 
@@ -101,82 +102,46 @@ impl<T> Vec2<T> {
         self.x * o.x + self.y * o.y
     }
 
-    /// Join the components of the two vetors with the given function.
-    pub fn cjoin<R, O>(
-        self,
-        other: impl Into<Vec2<R>>,
-        mut f: impl FnMut(T, R) -> O,
-    ) -> Vec2<O> {
-        let o = other.into();
-        (f(self.x, o.x), f(self.y, o.y)).into()
-    }
-
-    /// Join the components of the vectors with the given function.
-    pub fn cjoin_assign<R>(
-        &mut self,
-        other: impl Into<Vec2<R>>,
-        mut f: impl FnMut(&mut T, R),
-    ) {
-        let o = other.into();
-        f(&mut self.x, o.x);
-        f(&mut self.y, o.y);
-    }
-
-    /// Componentwise multiplication.
-    pub fn cmul<Right>(self, other: impl Into<Vec2<Right>>) -> Vec2<T::Output>
+    /// Checked add of two vectors.
+    ///
+    /// Returns [`None`] if addition of any of the components fails.
+    pub fn checked_add(self, other: impl Into<Vec2<T>>) -> Option<Vec2<T>>
     where
-        T: Mul<Right>,
+        T: Checked,
     {
         let o = other.into();
-        (self.x * o.x, self.y * o.y).into()
+        Some(Self::new(
+            self.x.checked_add(o.x)?,
+            self.y.checked_add(o.y)?,
+        ))
     }
 
-    /// Componentwise mul-assign.
-    pub fn cmul_assign<Right>(&mut self, other: impl Into<Vec2<Right>>)
+    /// Checked subtraction of two vectors.
+    ///
+    /// Returns [`None`] if subtraction of any of the components fails.
+    pub fn checked_sub(self, other: impl Into<Vec2<T>>) -> Option<Vec2<T>>
     where
-        T: MulAssign<Right>,
+        T: Checked,
     {
         let o = other.into();
-        self.x *= o.x;
-        self.y *= o.y;
+        Some(Self::new(
+            self.x.checked_sub(o.x)?,
+            self.y.checked_sub(o.y)?,
+        ))
     }
 
-    /// Componentwise division.
-    pub fn cdiv<Right>(self, other: impl Into<Vec2<Right>>) -> Vec2<T::Output>
+    /// Checked componentwise multiplication of two vectors.
+    ///
+    /// Returns [`None`] if multiplication of any of the components fails.
+    pub fn checked_cmul(self, other: impl Into<Vec2<T>>) -> Option<Vec2<T>>
     where
-        T: Div<Right>,
+        T: Checked,
     {
         let o = other.into();
-        (self.x / o.x, self.y / o.y).into()
-    }
-
-    /// Componentwise div-assign.
-    pub fn cdiv_assign<Right>(&mut self, other: impl Into<Vec2<Right>>)
-    where
-        T: DivAssign<Right>,
-    {
-        let o = other.into();
-        self.x /= o.x;
-        self.y /= o.y;
-    }
-
-    /// Componentwise remainder.
-    pub fn crem<Right>(self, other: impl Into<Vec2<Right>>) -> Vec2<T::Output>
-    where
-        T: Rem<Right>,
-    {
-        let o = other.into();
-        (self.x % o.x, self.y % o.y).into()
-    }
-
-    /// Componentwise rem-assign.
-    pub fn crem_assign<Right>(&mut self, other: impl Into<Vec2<Right>>)
-    where
-        T: RemAssign<Right>,
-    {
-        let o = other.into();
-        self.x %= o.x;
-        self.y %= o.y;
+        Some(Self::new(
+            self.x.checked_mul(o.x)?,
+            self.y.checked_mul(o.y)?,
+        ))
     }
 
     /// Sums the components.
@@ -368,7 +333,7 @@ impl<T> Vec2<T> {
     /// Sort the components.
     pub fn sort(&mut self)
     where
-        T: Ord,
+        T: PartialOrd,
     {
         if self.x > self.y {
             self.swap();
@@ -378,7 +343,7 @@ impl<T> Vec2<T> {
     /// Sort the components.
     pub fn sorted(mut self) -> Self
     where
-        T: Ord,
+        T: PartialOrd,
     {
         self.sort();
         self
@@ -783,6 +748,29 @@ where
 
     fn neg(self) -> Self::Output {
         (-self.x, -self.y).into()
+    }
+}
+
+impl<T: PartialOrd> PartialOrd for Vec2<T> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (self.x.partial_cmp(&other.x)?, self.y.partial_cmp(&other.y)?) {
+            (Ordering::Equal, Ordering::Equal) => Some(Ordering::Equal),
+            (
+                Ordering::Less | Ordering::Equal,
+                Ordering::Less | Ordering::Equal,
+            ) => Some(Ordering::Less),
+            (
+                Ordering::Greater | Ordering::Equal,
+                Ordering::Greater | Ordering::Equal,
+            ) => Some(Ordering::Greater),
+            _ => None,
+        }
+    }
+}
+
+impl<T> AsRef<Vec2<T>> for Vec2<T> {
+    fn as_ref(&self) -> &Vec2<T> {
+        self
     }
 }
 

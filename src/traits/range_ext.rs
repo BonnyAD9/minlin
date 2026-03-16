@@ -1,13 +1,22 @@
-use std::{cmp, ops::Range};
+use std::ops::{Range, Sub};
 
 use crate::{TwoComponent, Vec2};
 
+fn max<T: PartialOrd>(a: T, b: T) -> T {
+    if b > a { b } else { a }
+}
+
+fn min<T: PartialOrd>(a: T, b: T) -> T {
+    if a > b { b } else { a }
+}
+
+/// Trait for types that can represent range.
 pub trait RangeExt: Sized + TwoComponent {
     /// If the second component is smaller than the first, it returns range
     /// where is the first component twice.
     fn valid_range_or_empty(self) -> Self
     where
-        Self::Val: Ord + Clone,
+        Self::Val: PartialOrd + Clone,
     {
         let (a, b) = self.to_components();
         if a > b {
@@ -15,6 +24,15 @@ pub trait RangeExt: Sized + TwoComponent {
         } else {
             Self::from_components(a, b)
         }
+    }
+
+    /// Get the size of the range. (how much values it spans)
+    fn size(self) -> Self::Val
+    where
+        Self::Val: Sub<Output = Self::Val>,
+    {
+        let (a, b) = self.to_components();
+        b - a
     }
 
     /// Checks whether the given value is in range.
@@ -30,45 +48,36 @@ pub trait RangeExt: Sized + TwoComponent {
     /// components.
     fn intersect(self, other: impl Into<Self>) -> Self
     where
-        Self::Val: Ord + Clone,
+        Self::Val: PartialOrd + Clone,
     {
         let (s1, e1) = self.to_components();
         let (s2, e2) = other.into().to_components();
-        Self::from_components(cmp::max(s1, s2), cmp::min(e1, e2))
-            .valid_range_or_empty()
+        Self::from_components(max(s1, s2), min(e1, e2)).valid_range_or_empty()
     }
 
     /// Checks whether the two ranges intersect.
-    fn intersects(&self, other: impl AsRef<Self>) -> bool
+    fn intersects(&self, other: impl Into<Self>) -> bool
     where
-        Self::Val: Ord,
+        Self::Val: PartialOrd,
     {
-        let other = other.as_ref();
-        if self.comp1() < other.comp2() {
-            self.comp2() > other.comp1()
-        } else {
-            other.comp2() > self.comp1()
-        }
+        let other = other.into();
+        self.comp1() < other.comp2() && self.comp2() > other.comp1()
     }
 
     /// Checks whether the two ranges can be joined into single range.
-    fn touches(&self, other: impl AsRef<Self>) -> bool
+    fn touches(&self, other: impl Into<Self>) -> bool
     where
-        Self::Val: Ord,
+        Self::Val: PartialOrd,
     {
-        let other = other.as_ref();
-        if self.comp1() < other.comp2() {
-            self.comp2() >= other.comp1()
-        } else {
-            other.comp2() >= self.comp1()
-        }
+        let other = other.into();
+        self.comp1() <= other.comp2() && self.comp2() >= other.comp1()
     }
 
     /// Join the two ranges. If they cannot be joined, they are so (smaller
     /// range is first).
     fn join(self, other: impl Into<Self>) -> (Self, Option<Self>)
     where
-        Self::Val: Ord,
+        Self::Val: PartialOrd,
     {
         let (s1, e1) = self.to_components();
         let (s2, e2) = other.into().to_components();
@@ -81,16 +90,16 @@ pub trait RangeExt: Sized + TwoComponent {
                 )
             } else {
                 // Ranges touch
-                (Self::from_components(s1, cmp::max(e1, e2)), None)
+                (Self::from_components(s1, max(e1, e2)), None)
             }
-        } else if e2 < e1 {
+        } else if e2 < s1 {
             // Ranges don't touch
             (
                 Self::from_components(s2, e2),
                 Some(Self::from_components(s1, e1)),
             )
         } else {
-            (Self::from_components(s2, cmp::max(e1, e2)), None)
+            (Self::from_components(s2, max(e1, e2)), None)
         }
     }
 
@@ -98,11 +107,11 @@ pub trait RangeExt: Sized + TwoComponent {
     /// also cover the gap.
     fn join_gap(self, other: impl Into<Self>) -> Self
     where
-        Self::Val: Ord,
+        Self::Val: PartialOrd,
     {
         let (s1, e1) = self.to_components();
         let (s2, e2) = other.into().to_components();
-        Self::from_components(cmp::min(s1, s2), cmp::max(e1, e2))
+        Self::from_components(min(s1, s2), max(e1, e2))
     }
 
     /// Subtract the given range from this range.
@@ -113,7 +122,7 @@ pub trait RangeExt: Sized + TwoComponent {
     /// The resulting ranges are always ordered.
     fn sub_range(self, other: impl Into<Self>) -> (Self, Option<Self>)
     where
-        Self::Val: Ord + Clone,
+        Self::Val: PartialOrd + Clone,
     {
         let (s1, e1) = self.to_components();
         let (s2, e2) = other.into().to_components();
@@ -155,7 +164,7 @@ pub trait RangeExt: Sized + TwoComponent {
     /// inside this range, return this range.
     fn sub_range_gap(self, other: impl Into<Self>) -> Self
     where
-        Self::Val: Ord + Clone,
+        Self::Val: PartialOrd + Clone,
     {
         let (s1, e1) = self.to_components();
         let (s2, e2) = other.into().to_components();
@@ -195,7 +204,7 @@ pub trait RangeExt: Sized + TwoComponent {
     /// The resulting ranges are always ordered.
     fn sym_sub_range(self, other: impl Into<Self>) -> (Self, Self)
     where
-        Self::Val: Ord,
+        Self::Val: PartialOrd,
     {
         let (s1, e1) = self.to_components();
         let (s2, e2) = other.into().to_components();
@@ -215,6 +224,15 @@ pub trait RangeExt: Sized + TwoComponent {
         } else {
             (Self::from_components(s2, s1), Self::from_components(e1, e2))
         }
+    }
+
+    /// Check whether this range fully encloses the other range.
+    fn encloses(&self, other: impl Into<Self>) -> bool
+    where
+        Self::Val: PartialOrd,
+    {
+        let o = other.into();
+        self.comp1() <= o.comp1() && self.comp2() >= o.comp2()
     }
 }
 

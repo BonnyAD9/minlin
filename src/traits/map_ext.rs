@@ -1,8 +1,9 @@
 use std::ops::Range;
 
-use crate::{Cast, Vec2, Vec3};
+use crate::{Cast, Vec2, Vec3, Vec4};
 
-pub trait CastExt: Sized {
+/// Trait for types that can be mapped.
+pub trait MapExt: Sized {
     type Val;
     type This<R>;
 
@@ -26,7 +27,7 @@ pub trait CastExt: Sized {
     }
 }
 
-impl<T> CastExt for Vec2<T> {
+impl<T> MapExt for Vec2<T> {
     type Val = T;
     type This<R> = Vec2<R>;
 
@@ -35,7 +36,7 @@ impl<T> CastExt for Vec2<T> {
     }
 }
 
-impl<T> CastExt for Range<T> {
+impl<T> MapExt for Range<T> {
     type Val = T;
     type This<R> = Range<R>;
 
@@ -44,7 +45,7 @@ impl<T> CastExt for Range<T> {
     }
 }
 
-impl<T> CastExt for (T, T) {
+impl<T> MapExt for (T, T) {
     type Val = T;
     type This<R> = (R, R);
 
@@ -53,11 +54,20 @@ impl<T> CastExt for (T, T) {
     }
 }
 
-impl<T> CastExt for Vec3<T> {
+impl<T> MapExt for Vec3<T> {
     type Val = T;
     type This<R> = Vec3<R>;
 
     fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
         Vec3::new(f(self.x), f(self.y), f(self.z))
+    }
+}
+
+impl<T> MapExt for Vec4<T> {
+    type Val = T;
+    type This<R> = Vec4<R>;
+
+    fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
+        Vec4::new(f(self.x), f(self.y), f(self.z), f(self.w))
     }
 }

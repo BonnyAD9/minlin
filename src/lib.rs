@@ -1,4 +1,6 @@
 mod num_traits;
+mod padding;
+mod rect;
 mod traits;
 mod vec2;
 mod vec2_range_iter;
@@ -7,8 +9,8 @@ mod vec3_range_iter;
 mod vec4;
 
 pub use self::{
-    num_traits::*, traits::*, vec2::*, vec2_range_iter::*, vec3::*,
-    vec3_range_iter::*, vec4::*,
+    num_traits::*, padding::*, rect::*, traits::*, vec2::*,
+    vec2_range_iter::*, vec3::*, vec3_range_iter::*, vec4::*,
 };
 
 #[cfg(test)]

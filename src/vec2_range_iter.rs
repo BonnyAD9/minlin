@@ -2,6 +2,7 @@ use std::ops::AddAssign;
 
 use crate::{One, Vec2};
 
+/// Iterator over 2D area.
 pub struct Vec2RangeIter<T> {
     start: Vec2<T>,
     end: Vec2<T>,
@@ -12,6 +13,7 @@ impl<T> Vec2RangeIter<T>
 where
     T: Copy,
 {
+    /// Create new iterator over 2D area.
     pub fn new(start: Vec2<T>, end: Vec2<T>) -> Self {
         Self {
             x: start.x,
@@ -22,6 +24,7 @@ where
 }
 
 impl<T> Vec2RangeIter<T> {
+    /// Check whether the remaining part contains te given vector.
     pub fn contains(&self, other: impl Into<Vec2<T>>) -> bool
     where
         T: Ord,

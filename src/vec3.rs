@@ -1,4 +1,5 @@
 use std::{
+    cmp::Ordering,
     fmt::Display,
     mem,
     ops::{
@@ -8,8 +9,8 @@ use std::{
 };
 
 use crate::{
-    CastExt, Float, Goniometric, IntoFloat, Isqrt, LargeType, NormalLimits,
-    Scale, Sqrt, Vec2, Zero,
+    Checked, Float, Goniometric, IntoFloat, Isqrt, LargeType, MapExt,
+    NormalLimits, Scale, Sqrt, Vec2, Zero,
 };
 
 /// Represents three dimensional vector. Can be also use as color or any
@@ -147,74 +148,49 @@ impl<T> Vec3<T> {
         self.sq_len().isqrt()
     }
 
-    /// Join the components of the two vectors with the given function.
-    pub fn cjoin<R, O>(
-        self,
-        other: impl Into<Vec3<R>>,
-        mut f: impl FnMut(T, R) -> O,
-    ) -> Vec3<O> {
+    /// Checked add of two vectors.
+    ///
+    /// Returns [`None`] if addition of any of the components fails.
+    pub fn checked_add(self, other: impl Into<Vec3<T>>) -> Option<Vec3<T>>
+    where
+        T: Checked,
+    {
         let o = other.into();
-        (f(self.x, o.x), f(self.y, o.y), f(self.z, o.z)).into()
+        Some(Self::new(
+            self.x.checked_add(o.x)?,
+            self.y.checked_add(o.y)?,
+            self.z.checked_add(o.z)?,
+        ))
     }
 
-    /// Join the components of the vectors with the given function.
-    pub fn cjoin_assign<R>(
-        &mut self,
-        other: impl Into<Vec3<R>>,
-        mut f: impl FnMut(&mut T, R),
-    ) {
+    /// Checked subtraction of two vectors.
+    ///
+    /// Returns [`None`] if subtraction of any of the components fails.
+    pub fn checked_sub(self, other: impl Into<Vec3<T>>) -> Option<Vec3<T>>
+    where
+        T: Checked,
+    {
         let o = other.into();
-        f(&mut self.x, o.x);
-        f(&mut self.y, o.y);
-        f(&mut self.z, o.z);
+        Some(Self::new(
+            self.x.checked_sub(o.x)?,
+            self.y.checked_sub(o.y)?,
+            self.z.checked_sub(o.z)?,
+        ))
     }
 
-    /// Do componentwise multiplication.
-    pub fn cmul<Right>(self, other: impl Into<Vec3<Right>>) -> Vec3<T::Output>
+    /// Checked componentwise multiplication of two vectors.
+    ///
+    /// Returns [`None`] if multiplication of any of the components fails.
+    pub fn checked_cmul(self, other: impl Into<Vec3<T>>) -> Option<Vec3<T>>
     where
-        T: Mul<Right>,
+        T: Checked,
     {
-        self.cjoin(other, T::mul)
-    }
-
-    /// Componentwise multiplication in place.
-    pub fn cmul_assign<R>(&mut self, other: impl Into<Vec3<R>>)
-    where
-        T: MulAssign<R>,
-    {
-        self.cjoin_assign(other, T::mul_assign);
-    }
-
-    /// Componentwise division.
-    pub fn cdiv<R>(self, other: impl Into<Vec3<R>>) -> Vec3<T::Output>
-    where
-        T: Div<R>,
-    {
-        self.cjoin(other, T::div)
-    }
-
-    /// Componentwise division in place.
-    pub fn cdiv_assign<R>(&mut self, other: impl Into<Vec3<R>>)
-    where
-        T: DivAssign<R>,
-    {
-        self.cjoin_assign(other, T::div_assign);
-    }
-
-    /// Componentwise remainder.
-    pub fn crem<R>(self, other: impl Into<Vec3<R>>) -> Vec3<T::Output>
-    where
-        T: Rem<R>,
-    {
-        self.cjoin(other, T::rem)
-    }
-
-    /// Componentwise remainder in place.
-    pub fn crem_assign<R>(&mut self, other: impl Into<Vec3<R>>)
-    where
-        T: RemAssign<R>,
-    {
-        self.cjoin_assign(other, T::rem_assign);
+        let o = other.into();
+        Some(Self::new(
+            self.x.checked_mul(o.x)?,
+            self.y.checked_mul(o.y)?,
+            self.z.checked_mul(o.z)?,
+        ))
     }
 
     /// Sum all the components.
@@ -1108,6 +1084,31 @@ impl<T: Neg> Neg for Vec3<T> {
 
     fn neg(self) -> Self::Output {
         self.map(|x| -x)
+    }
+}
+
+impl<T: PartialOrd> PartialOrd for Vec3<T> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (
+            self.x.partial_cmp(&other.x)?,
+            self.y.partial_cmp(&other.y)?,
+            self.z.partial_cmp(&other.z)?,
+        ) {
+            (Ordering::Equal, Ordering::Equal, Ordering::Equal) => {
+                Some(Ordering::Equal)
+            }
+            (
+                Ordering::Less | Ordering::Equal,
+                Ordering::Less | Ordering::Equal,
+                Ordering::Less | Ordering::Equal,
+            ) => Some(Ordering::Less),
+            (
+                Ordering::Greater | Ordering::Equal,
+                Ordering::Greater | Ordering::Equal,
+                Ordering::Greater | Ordering::Equal,
+            ) => Some(Ordering::Greater),
+            _ => None,
+        }
     }
 }
 
