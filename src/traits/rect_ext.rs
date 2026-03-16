@@ -140,6 +140,12 @@ pub trait RectExt: Sized {
             self.size().saturating_sub(p.size()),
         )
     }
+    
+    /// Enlarge the rectangle with the given padding.
+    fn extend_rect(&self, margin: impl Into<Padding<Self::Val>>) -> Self {
+        let m = margin.into();
+        Self::from_pos_size(self.pos() - m.offset(), self.size() + m.size())
+    }
 
     /// Create rectangle that encloses both of the rectangles.
     fn bound_join(&self, other: impl Into<Self>) -> Self {
