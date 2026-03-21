@@ -3,12 +3,6 @@ pub trait Scale<T> {
     fn scale(self) -> T;
 }
 
-impl<T> Scale<T> for T {
-    fn scale(self) -> T {
-        self
-    }
-}
-
 macro_rules! impl_scale_int {
     ($($l:ident),* -> $s:ident) => {
         $(
@@ -88,6 +82,16 @@ macro_rules! impl_scale_unsigned_signed {
     };
 }
 
+macro_rules! impl_scale_self {
+    ($($i:ident),* $(,)?) => {
+        $(impl Scale<$i> for $i {
+            fn scale(self) -> $i {
+                self
+            }
+        })*
+    };
+}
+
 impl_scale_int!(u128, u64, u32, u16 -> u8);
 impl_scale_int!(u128, u64, u32 -> u16);
 impl_scale_int!(u128, u64 -> u32);
@@ -113,5 +117,7 @@ impl_scale_unsigned_signed!(
 impl_scale_unsigned_signed!(
     u128, u64, f64, u32, f32, u16, u8 -> i128 = u128
 );
+
+impl_scale_self!(u8, i8, u16, i16, u32, i32, u64, i64, u128, i128, f32, f64);
 
 //impl_scale_signed!(i128 = u128, i64 = u64, i32 = u32, i16 = u16, i8 = u8);

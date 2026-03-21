@@ -140,7 +140,7 @@ pub trait RectExt: Sized {
             self.size().saturating_sub(p.size()),
         )
     }
-    
+
     /// Enlarge the rectangle with the given padding.
     fn extend_rect(&self, margin: impl Into<Padding<Self::Val>>) -> Self {
         let m = margin.into();
