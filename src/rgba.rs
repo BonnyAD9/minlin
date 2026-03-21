@@ -139,6 +139,12 @@ impl<T> Rgba<T> {
     }
 }
 
+impl<T> Default for Rgba<T> where T: NormalLimits {
+    fn default() -> Self {
+        Self::BLACK
+    }
+}
+
 impl<T: NormalLimits> Rgba<T> {
     /// Black color.
     pub const WHITE: Self = Self::rgb(T::NORM_MIN, T::NORM_MIN, T::NORM_MIN);
