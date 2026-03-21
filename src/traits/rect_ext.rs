@@ -214,4 +214,18 @@ pub trait RectExt: Sized {
         let y = self.yrange().clamp(pt.y);
         Vec2::new(x, y)
     }
+    
+    /// Sets the position to the given value.
+    fn set_pos(&mut self, pos: impl Into<Vec2<Self::Val>>) {
+        let s = pos.into();
+        self.set_x(s.x);
+        self.set_y(s.y);
+    }
+    
+    /// Sets the size of the rectangle.
+    fn set_size(&mut self, size: impl Into<Vec2<Self::Val>>) {
+        let s = size.into();
+        self.set_width(s.x);
+        self.set_height(s.y);
+    }
 }
