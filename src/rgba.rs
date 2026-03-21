@@ -90,9 +90,9 @@ impl<T> Rgba<T> {
         u8: Scale<T>,
         T: NormalLimits,
     {
-        let r = ((rgb >> 24) as u8).scale();
-        let g = ((rgb >> 16) as u8).scale();
-        let b = ((rgb >> 8) as u8).scale();
+        let r = ((rgb >> 16) as u8).scale();
+        let g = ((rgb >> 8) as u8).scale();
+        let b = (rgb as u8).scale();
         Self::rgb(r, g, b)
     }
 
@@ -106,9 +106,9 @@ impl<T> Rgba<T> {
     where
         u8: Scale<T>,
     {
-        let r = ((rgb >> 24) as u8).scale();
-        let g = ((rgb >> 16) as u8).scale();
-        let b = ((rgb >> 8) as u8).scale();
+        let r = ((rgb >> 16) as u8).scale();
+        let g = ((rgb >> 8) as u8).scale();
+        let b = (rgb as u8).scale();
         Self::rgba(r, g, b, a.scale())
     }
 
