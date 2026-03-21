@@ -44,15 +44,28 @@ pub trait RangeExt: Sized + TwoComponent {
     }
 
     /// Calculates intersection of the two ranges. If the intersection is empty
-    /// the resulting range will have the largest value as both of its
-    /// components.
+    /// the resulting range will be of self closer to other.
     fn intersect(self, other: impl Into<Self>) -> Self
     where
         Self::Val: PartialOrd + Clone,
     {
         let (s1, e1) = self.to_components();
         let (s2, e2) = other.into().to_components();
-        Self::from_components(max(s1, s2), min(e1, e2)).valid_range_or_empty()
+        if s1 >= s2 {
+            if e1 <= e2 {
+                Self::from_components(s1, e1)
+            } else if e2 >= s1 {
+                Self::from_components(s1, e2)
+            } else {
+                Self::from_components(s1.clone(), s1)
+            }
+        } else if e2 <= e1 {
+            Self::from_components(s2, e2)
+        } else if e1 >= s2 {
+            Self::from_components(s2, e1)
+        } else {
+            Self::from_components(e1.clone(), e1)
+        }
     }
 
     /// Checks whether the two ranges intersect.
