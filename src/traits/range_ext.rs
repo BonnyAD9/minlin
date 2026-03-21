@@ -234,6 +234,18 @@ pub trait RangeExt: Sized + TwoComponent {
         let o = other.into();
         self.comp1() <= o.comp1() && self.comp2() >= o.comp2()
     }
+    
+    /// Clamp the value to be in the range. Note that this may return the upper
+    /// bound.
+    fn clamp(&self, v: Self::Val) -> Self::Val where Self::Val: PartialOrd + Copy {
+        if v < *self.comp1() {
+            *self.comp1()
+        } else if v > *self.comp2() {
+            *self.comp2()
+        } else {
+            v
+        }
+    }
 }
 
 impl<T> RangeExt for Vec2<T> {}

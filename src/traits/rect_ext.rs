@@ -206,4 +206,12 @@ pub trait RectExt: Sized {
     {
         self.width() == Self::Val::ZERO || self.height() == Self::Val::ZERO
     }
+    
+    /// Clamp the point to be contained in the rectangle.
+    fn clamp(&self, pt: impl Into<Vec2<Self::Val>>) -> Vec2<Self::Val> {
+        let pt = pt.into();
+        let x = self.xrange().clamp(pt.x);
+        let y = self.yrange().clamp(pt.y);
+        Vec2::new(x, y)
+    }
 }
