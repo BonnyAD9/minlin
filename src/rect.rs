@@ -1,6 +1,6 @@
-use std::ops::{Add, AddAssign, Deref, DerefMut, Range, Sub};
+use std::ops::{Add, AddAssign, Deref, DerefMut, Range, Sub, SubAssign};
 
-use crate::{One, RectExt, Vec2, Vec2RangeIter, Vec4};
+use crate::{One, Padding, RectExt, Vec2, Vec2RangeIter, Vec4, Zero};
 
 /// Rectangle.
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq)]
@@ -112,5 +112,45 @@ where
         let mut bl = self.xy();
         bl += self.zw();
         self.xy().to(bl)
+    }
+}
+
+impl<T> Add<Padding<T>> for Rect<T>
+where
+    T: Add<Output = T> + PartialOrd + Zero + Sub<Output = T> + Copy
+{
+    type Output = Rect<T>;
+
+    fn add(self, rhs: Padding<T>) -> Self::Output {
+        self.pad_rect(rhs)
+    }
+}
+
+impl<T> AddAssign<Padding<T>> for Rect<T>
+where
+    T: Add<Output = T> + PartialOrd + Zero + Sub<Output = T> + Copy
+{
+    fn add_assign(&mut self, rhs: Padding<T>) {
+        *self = *self + rhs;
+    }
+}
+
+impl<T> Sub<Padding<T>> for Rect<T>
+where
+    T: Add<Output = T> + PartialOrd + Sub<Output = T> + Copy
+{
+    type Output = Rect<T>;
+
+    fn sub(self, rhs: Padding<T>) -> Self::Output {
+        self.extend_rect(rhs)
+    }
+}
+
+impl<T> SubAssign<Padding<T>> for Rect<T>
+where
+    T: Add<Output = T> + PartialOrd + Sub<Output = T> + Copy
+{
+    fn sub_assign(&mut self, rhs: Padding<T>) {
+        *self = *self - rhs;
     }
 }
