@@ -1,6 +1,6 @@
 use std::ops::{Add, Div, Mul, Range, Sub};
 
-use crate::{CompArithm, Padding, RangeExt, Saturating, Two, Vec2, Zero};
+use crate::{CompArithm, Padding, RangeExt, Two, Vec2, Zero};
 
 pub trait RectExt: Sized {
     type Val: Copy
@@ -132,12 +132,18 @@ pub trait RectExt: Sized {
     /// Shrink the rectangle with padding.
     fn pad_rect(&self, padding: impl Into<Padding<Self::Val>>) -> Self
     where
-        Self::Val: Saturating,
+        Self::Val: PartialOrd + Zero,
     {
         let p = padding.into();
         Self::from_pos_size(
             self.pos() + p.offset(),
-            self.size().saturating_sub(p.size()),
+            self.size().cjoin(p.size(), |s, p| {
+                if p >= s {
+                    Self::Val::ZERO
+                } else {
+                    s - p
+                }
+            }),
         )
     }
 

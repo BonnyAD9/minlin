@@ -151,6 +151,9 @@ impl<T: NormalLimits> Rgba<T> {
     
     /// White color.
     pub const BLACK: Self = Self::rgb(T::NORM_MIN, T::NORM_MIN, T::NORM_MIN);
+    
+    /// Transparent black.
+    pub const TRANSPARENT: Self = Self::rgba(T::NORM_MIN, T::NORM_MIN, T::NORM_MIN, T::NORM_MIN);
 }
 
 impl<T> Deref for Rgba<T> {
