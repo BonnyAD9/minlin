@@ -117,7 +117,7 @@ where
 
 impl<T> Add<Padding<T>> for Rect<T>
 where
-    T: Add<Output = T> + PartialOrd + Zero + Sub<Output = T> + Copy
+    T: Add<Output = T> + PartialOrd + Zero + Sub<Output = T> + Copy,
 {
     type Output = Rect<T>;
 
@@ -128,7 +128,7 @@ where
 
 impl<T> AddAssign<Padding<T>> for Rect<T>
 where
-    T: Add<Output = T> + PartialOrd + Zero + Sub<Output = T> + Copy
+    T: Add<Output = T> + PartialOrd + Zero + Sub<Output = T> + Copy,
 {
     fn add_assign(&mut self, rhs: Padding<T>) {
         *self = *self + rhs;
@@ -137,7 +137,7 @@ where
 
 impl<T> Sub<Padding<T>> for Rect<T>
 where
-    T: Add<Output = T> + PartialOrd + Sub<Output = T> + Copy
+    T: Add<Output = T> + PartialOrd + Sub<Output = T> + Copy,
 {
     type Output = Rect<T>;
 
@@ -148,7 +148,7 @@ where
 
 impl<T> SubAssign<Padding<T>> for Rect<T>
 where
-    T: Add<Output = T> + PartialOrd + Sub<Output = T> + Copy
+    T: Add<Output = T> + PartialOrd + Sub<Output = T> + Copy,
 {
     fn sub_assign(&mut self, rhs: Padding<T>) {
         *self = *self - rhs;

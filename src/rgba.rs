@@ -116,9 +116,12 @@ impl<T> Rgba<T> {
     pub fn transparent(self, a: impl Scale<T>) -> Self {
         Self::rgba(self.0.x, self.0.y, self.0.z, a.scale())
     }
-    
+
     /// Construct same color but opaque.
-    pub fn opaque(self) -> Self where T: NormalLimits {
+    pub fn opaque(self) -> Self
+    where
+        T: NormalLimits,
+    {
         Self::rgb(self.0.x, self.0.y, self.0.z)
     }
 
@@ -139,7 +142,10 @@ impl<T> Rgba<T> {
     }
 }
 
-impl<T> Default for Rgba<T> where T: NormalLimits {
+impl<T> Default for Rgba<T>
+where
+    T: NormalLimits,
+{
     fn default() -> Self {
         Self::BLACK
     }
@@ -148,12 +154,13 @@ impl<T> Default for Rgba<T> where T: NormalLimits {
 impl<T: NormalLimits> Rgba<T> {
     /// Black color.
     pub const WHITE: Self = Self::rgb(T::NORM_MIN, T::NORM_MIN, T::NORM_MIN);
-    
+
     /// White color.
     pub const BLACK: Self = Self::rgb(T::NORM_MIN, T::NORM_MIN, T::NORM_MIN);
-    
+
     /// Transparent black.
-    pub const TRANSPARENT: Self = Self::rgba(T::NORM_MIN, T::NORM_MIN, T::NORM_MIN, T::NORM_MIN);
+    pub const TRANSPARENT: Self =
+        Self::rgba(T::NORM_MIN, T::NORM_MIN, T::NORM_MIN, T::NORM_MIN);
 }
 
 impl<T> Deref for Rgba<T> {

@@ -138,11 +138,7 @@ pub trait RectExt: Sized {
         Self::from_pos_size(
             self.pos() + p.offset(),
             self.size().cjoin(p.size(), |s, p| {
-                if p >= s {
-                    Self::Val::ZERO
-                } else {
-                    s - p
-                }
+                if p >= s { Self::Val::ZERO } else { s - p }
             }),
         )
     }
@@ -212,7 +208,7 @@ pub trait RectExt: Sized {
     {
         self.width() == Self::Val::ZERO || self.height() == Self::Val::ZERO
     }
-    
+
     /// Clamp the point to be contained in the rectangle.
     fn clamp(&self, pt: impl Into<Vec2<Self::Val>>) -> Vec2<Self::Val> {
         let pt = pt.into();
@@ -220,14 +216,14 @@ pub trait RectExt: Sized {
         let y = self.yrange().clamp(pt.y);
         Vec2::new(x, y)
     }
-    
+
     /// Sets the position to the given value.
     fn set_pos(&mut self, pos: impl Into<Vec2<Self::Val>>) {
         let s = pos.into();
         self.set_x(s.x);
         self.set_y(s.y);
     }
-    
+
     /// Sets the size of the rectangle.
     fn set_size(&mut self, size: impl Into<Vec2<Self::Val>>) {
         let s = size.into();

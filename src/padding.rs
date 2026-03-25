@@ -1,6 +1,6 @@
 use std::ops::{Add, AddAssign, Deref, DerefMut, Sub, SubAssign};
 
-use crate::{CompArithm, Rect, Vec2, Vec4, Zero};
+use crate::{Rect, Vec2, Vec4, Zero};
 
 /// Type that represents padding.
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Default)]
@@ -134,7 +134,10 @@ impl<T: Copy + Sub<Output = T>> From<Rect<T>> for Padding<T> {
     }
 }
 
-impl<A, T> Add<A> for Padding<T> where Vec4<T>: Add<A, Output = Vec4<T>> {
+impl<A, T> Add<A> for Padding<T>
+where
+    Vec4<T>: Add<A, Output = Vec4<T>>,
+{
     type Output = Self;
 
     fn add(self, rhs: A) -> Self::Output {
@@ -142,7 +145,10 @@ impl<A, T> Add<A> for Padding<T> where Vec4<T>: Add<A, Output = Vec4<T>> {
     }
 }
 
-impl<T, R> Add<Padding<R>> for Padding<T> where T: Add<R> {
+impl<T, R> Add<Padding<R>> for Padding<T>
+where
+    T: Add<R>,
+{
     type Output = Padding<T::Output>;
 
     fn add(self, rhs: Padding<R>) -> Self::Output {
@@ -150,19 +156,28 @@ impl<T, R> Add<Padding<R>> for Padding<T> where T: Add<R> {
     }
 }
 
-impl<A, T> AddAssign<A> for Padding<T> where Vec4<T>: AddAssign<A> {
+impl<A, T> AddAssign<A> for Padding<T>
+where
+    Vec4<T>: AddAssign<A>,
+{
     fn add_assign(&mut self, rhs: A) {
         self.0 += rhs;
     }
 }
 
-impl<T, R> AddAssign<Padding<R>> for Padding<T> where T: AddAssign<R> {
+impl<T, R> AddAssign<Padding<R>> for Padding<T>
+where
+    T: AddAssign<R>,
+{
     fn add_assign(&mut self, rhs: Padding<R>) {
         self.0 += rhs.0
     }
 }
 
-impl<A, T> Sub<A> for Padding<T> where Vec4<T>: Sub<A, Output = Vec4<T>> {
+impl<A, T> Sub<A> for Padding<T>
+where
+    Vec4<T>: Sub<A, Output = Vec4<T>>,
+{
     type Output = Self;
 
     fn sub(self, rhs: A) -> Self::Output {
@@ -170,7 +185,10 @@ impl<A, T> Sub<A> for Padding<T> where Vec4<T>: Sub<A, Output = Vec4<T>> {
     }
 }
 
-impl<T, R> Sub<Padding<R>> for Padding<T> where T: Sub<R> {
+impl<T, R> Sub<Padding<R>> for Padding<T>
+where
+    T: Sub<R>,
+{
     type Output = Padding<T::Output>;
 
     fn sub(self, rhs: Padding<R>) -> Self::Output {
@@ -178,13 +196,19 @@ impl<T, R> Sub<Padding<R>> for Padding<T> where T: Sub<R> {
     }
 }
 
-impl<A, T> SubAssign<A> for Padding<T> where Vec4<T>: SubAssign<A> {
+impl<A, T> SubAssign<A> for Padding<T>
+where
+    Vec4<T>: SubAssign<A>,
+{
     fn sub_assign(&mut self, rhs: A) {
         self.0 -= rhs;
     }
 }
 
-impl<T, R> SubAssign<Padding<R>> for Padding<T> where T: SubAssign<R> {
+impl<T, R> SubAssign<Padding<R>> for Padding<T>
+where
+    T: SubAssign<R>,
+{
     fn sub_assign(&mut self, rhs: Padding<R>) {
         self.0 -= rhs.0
     }
