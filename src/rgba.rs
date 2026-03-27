@@ -1,4 +1,4 @@
-use std::ops::{Deref, DerefMut};
+use std::ops::{Deref, DerefMut, Mul};
 
 use crate::{Float, MapExt, NormalLimits, Scale, Vec4};
 
@@ -139,6 +139,14 @@ impl<T> Rgba<T> {
         T: Scale<f32>,
     {
         self.scale()
+    }
+    
+    /// Multiply the solid components.
+    pub fn rgb_mul(&self, m: T) -> Self
+    where
+        T: Mul<Output = T> + Copy
+    {
+        Self(Vec4::new(self.x * m, self.y * m, self.z * m, self.w))
     }
 }
 
