@@ -140,11 +140,11 @@ impl<T> Rgba<T> {
     {
         self.scale()
     }
-    
+
     /// Multiply the solid components.
     pub fn rgb_mul(&self, m: T) -> Self
     where
-        T: Mul<Output = T> + Copy
+        T: Mul<Output = T> + Copy,
     {
         Self(Vec4::new(self.x * m, self.y * m, self.z * m, self.w))
     }

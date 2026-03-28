@@ -3,6 +3,7 @@ mod checked;
 mod containing_float;
 mod float;
 mod goniometric;
+mod infinity;
 mod into_float;
 mod isqrt;
 mod large_type;
@@ -16,6 +17,6 @@ mod zero;
 
 pub use self::{
     cast::*, checked::*, containing_float::*, float::*, goniometric::*,
-    into_float::*, isqrt::*, large_type::*, normal_limits::*, one::*,
-    saturating::*, scale::*, sqrt::*, two::*, zero::*,
+    infinity::*, into_float::*, isqrt::*, large_type::*, normal_limits::*,
+    one::*, saturating::*, scale::*, sqrt::*, two::*, zero::*,
 };

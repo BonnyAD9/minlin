@@ -564,6 +564,20 @@ impl<T> Vec2<T> {
     pub fn range(self) -> Range<T> {
         self.into()
     }
+
+    /// Combine the two vector based on selector. `true` -> value from other.
+    pub fn combine(
+        self,
+        other: impl Into<Vec2<T>>,
+        selector: impl Into<Vec2<bool>>,
+    ) -> Self {
+        let s = selector.into();
+        let o = other.into();
+        Vec2::new(
+            if s.x { o.x } else { self.x },
+            if s.y { o.y } else { self.y },
+        )
+    }
 }
 
 impl Vec2<bool> {

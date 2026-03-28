@@ -1,6 +1,6 @@
 use std::ops::{Add, AddAssign, Deref, DerefMut, Sub, SubAssign};
 
-use crate::{Rect, Vec2, Vec4, Zero};
+use crate::{MapExt, Rect, Vec2, Vec4, Zero};
 
 /// Type that represents padding.
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Default)]
@@ -18,9 +18,9 @@ impl<T: Copy> Padding<T> {
     }
 
     /// Get the total size of the padding.
-    pub fn size(&self) -> Vec2<T>
+    pub fn size(&self) -> Vec2<T::Output>
     where
-        T: Add<Output = T>,
+        T: Add,
     {
         self.0.xy() + self.0.zw()
     }
@@ -131,6 +131,15 @@ impl<T: Copy + Sub<Output = T>> From<Rect<T>> for Padding<T> {
     fn from(value: Rect<T>) -> Self {
         let (pos, siz) = value.xy_zw();
         Self((pos, siz - pos).into())
+    }
+}
+
+impl<T> MapExt for Padding<T> {
+    type Val = T;
+    type This<R> = Padding<R>;
+
+    fn map<R>(self, f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
+        Padding(self.0.map(f))
     }
 }
 

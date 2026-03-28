@@ -230,4 +230,26 @@ pub trait RectExt: Sized {
         self.set_width(s.x);
         self.set_height(s.y);
     }
+
+    /// Extend the rectangle from bottom by the given amount.
+    fn extend_bot(&mut self, amt: Self::Val) {
+        self.set_height(self.height() + amt);
+    }
+    
+    /// Extend the rectangle from right by the given amount.
+    fn extend_right(&mut self, amt: Self::Val) {
+        self.set_width(self.width() + amt);
+    }
+    
+    /// Extend the rectangle from left by the given amount.
+    fn extend_left(&mut self, amt: Self::Val) {
+        self.set_width(self.width() + amt);
+        self.set_x(self.x() - amt);
+    }
+    
+    /// Extend the rectangle from left by the given amount.
+    fn extend_top(&mut self, amt: Self::Val) {
+        self.set_height(self.height() + amt);
+        self.set_y(self.y() - amt);
+    }
 }
