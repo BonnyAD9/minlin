@@ -9,18 +9,27 @@
 - Methods `map`, `cast` and `convert` on `Vec3` have been moved to trait
   implementation.
 - Method `rect_center` on `Vec4` has been moved to trait implementation.
+- `Scale` is no longer implemented for every type.
 
 ### New features
 - Range operations `join`, `valid_range_or_empty`, `intersect`, `intersects`,
   `touches`, `join_gap`, `sub_range`, `sub_range_gap`, `sym_sub_range` for
   `Vec2`.
-- New traits `TwoComponent`, `MapExt` and `RangeExt` that can add methods to
-  types outside this crate. They are notably implemented to `Range<T>`.
+- New method `Vec2::combine` to combine two vectors.
+- New traits `TwoComponent`, `MapExt`, `RangeExt` and `CompArithm` that can add
+  methods to types outside this crate. Some are notably implemented to
+  `Range<T>`.
+- New number traits `Checked`, `Infinity`, `Saturating`.
 - New trait `RectExt`.
 - New type `Rect`.
 - New type `Padding`.
+- New type `Rgba`.
 - Implement arithmetic on `Vec4`.
+- Implement many missing methods on `Vec4`.
 - Add checked and saturating arithmetic.
+
+### Changes
+- Some functions have been changed to be `const`.
 
 ## v0.3.1
 ### Fixes
