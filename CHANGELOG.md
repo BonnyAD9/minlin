@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## future
+## v0.4.0
 ### Breaking changes
 - `Vec2::in_range` has been renamed to `Vec2::contains`.
 - `Vec2::contains` has been renamed to `Vec2::size_contains`.
