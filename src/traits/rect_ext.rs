@@ -252,4 +252,9 @@ pub trait RectExt: Sized {
         self.set_height(self.height() + amt);
         self.set_y(self.y() - amt);
     }
+    
+    /// Create new rectangle moved by the given amount.
+    fn moved_by(&self, amt: impl Into<Vec2<Self::Val>>) -> Self {
+        Self::from_pos_size(self.pos() + amt.into(), self.size())
+    }
 }

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## future
+### New features
+- Add `RectExt::moved_by`.
+
 ## v0.4.0
 ### Breaking changes
 - `Vec2::in_range` has been renamed to `Vec2::contains`.
