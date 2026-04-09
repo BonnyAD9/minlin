@@ -252,9 +252,31 @@ pub trait RectExt: Sized {
         self.set_height(self.height() + amt);
         self.set_y(self.y() - amt);
     }
-    
+
     /// Create new rectangle moved by the given amount.
     fn moved_by(&self, amt: impl Into<Vec2<Self::Val>>) -> Self {
         Self::from_pos_size(self.pos() + amt.into(), self.size())
+    }
+
+    /// Set the right value.
+    fn set_right(&mut self, r: Self::Val) {
+        self.set_width(r - self.left());
+    }
+
+    /// Set the left value.
+    fn set_left(&mut self, l: Self::Val) {
+        self.set_width(self.right() - l);
+        self.set_x(l);
+    }
+
+    /// Set the bottom value.
+    fn set_bottom(&mut self, b: Self::Val) {
+        self.set_height(b - self.top());
+    }
+
+    /// Set the top value.
+    fn set_top(&mut self, t: Self::Val) {
+        self.set_width(self.bottom() - t);
+        self.set_y(t);
     }
 }

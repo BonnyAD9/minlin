@@ -2,7 +2,8 @@
 
 ## future
 ### New features
-- Add `RectExt::moved_by`.
+- Add methods to `RectExt`: `moved_by`, `set_right`, `set_bottom`, `set_left`,
+  `set_top`.
 
 ## v0.4.0
 ### Breaking changes
