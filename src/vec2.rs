@@ -3,7 +3,8 @@ use std::{
     fmt::Display,
     ops::{
         Add, AddAssign, Bound, Div, DivAssign, Index, IndexMut, Mul,
-        MulAssign, Neg, Range, RangeBounds, Rem, RemAssign, Sub, SubAssign,
+        MulAssign, Neg, Not, Range, RangeBounds, Rem, RemAssign, Sub,
+        SubAssign,
     },
 };
 
@@ -762,6 +763,17 @@ where
 
     fn neg(self) -> Self::Output {
         (-self.x, -self.y).into()
+    }
+}
+
+impl<T> Not for Vec2<T>
+where
+    T: Not,
+{
+    type Output = Vec2<T::Output>;
+
+    fn not(self) -> Self::Output {
+        (!self.x, !self.y).into()
     }
 }
 

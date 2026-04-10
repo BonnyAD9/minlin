@@ -4,7 +4,7 @@ use std::{
     mem,
     ops::{
         Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg,
-        Rem, RemAssign, Sub, SubAssign,
+        Not, Rem, RemAssign, Sub, SubAssign,
     },
 };
 
@@ -1084,6 +1084,17 @@ impl<T: Neg> Neg for Vec3<T> {
 
     fn neg(self) -> Self::Output {
         self.map(|x| -x)
+    }
+}
+
+impl<T> Not for Vec3<T>
+where
+    T: Not,
+{
+    type Output = Vec3<T::Output>;
+
+    fn not(self) -> Self::Output {
+        self.map(|a| !a)
     }
 }
 
