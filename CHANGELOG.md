@@ -5,6 +5,7 @@
 - Add methods to `RectExt`: `moved_by`, `set_right`, `set_bottom`, `set_left`,
   `set_top`.
 - Implement `Not` for `Vec2`, `Vec3` and `Vec4`.
+- Implement `Hash` for `Vec2`, `Vec3`, `Vec4`, `Rect` and `Padding`.
 
 ## v0.4.0
 ### Breaking changes

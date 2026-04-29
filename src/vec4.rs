@@ -10,7 +10,7 @@ use std::{
 use crate::{MapExt, RectExt, Vec2};
 
 /// Four dimensional vector or any 4-tuple-like object (e.g. rectangle).
-#[derive(Debug, Copy, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Vec4<T = usize> {
     pub x: T,
     pub y: T,

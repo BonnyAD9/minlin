@@ -2,7 +2,7 @@ use std::ops::{Deref, DerefMut, Mul};
 
 use crate::{Float, MapExt, NormalLimits, Scale, Vec4};
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Rgba<T = u8>(pub Vec4<T>);
 
 impl<T> Rgba<T> {

@@ -3,7 +3,7 @@ use std::ops::{Add, AddAssign, Deref, DerefMut, Sub, SubAssign};
 use crate::{MapExt, Rect, Vec2, Vec4, Zero};
 
 /// Type that represents padding.
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Default)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Default, Hash)]
 pub struct Padding<T = usize>(pub Vec4<T>);
 
 impl<T: Copy> Padding<T> {

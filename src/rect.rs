@@ -3,7 +3,7 @@ use std::ops::{Add, AddAssign, Deref, DerefMut, Range, Sub, SubAssign};
 use crate::{One, Padding, RectExt, Vec2, Vec2RangeIter, Vec4, Zero};
 
 /// Rectangle.
-#[derive(Debug, Copy, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Rect<T = usize>(pub Vec4<T>);
 
 impl<T> Rect<T> {
