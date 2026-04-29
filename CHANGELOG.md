@@ -7,6 +7,9 @@
 - Implement `Not` for `Vec2`, `Vec3` and `Vec4`.
 - Implement `Hash` for `Vec2`, `Vec3`, `Vec4`, `Rect` and `Padding`.
 
+### Fixes
+- `Vec3::xz` now returns the proper value.
+
 ## v0.4.0
 ### Breaking changes
 - `Vec2::in_range` has been renamed to `Vec2::contains`.

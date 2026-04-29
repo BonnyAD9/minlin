@@ -427,8 +427,8 @@ impl<T> Vec3<T> {
     }
 
     /// Get two components of the vector.
-    pub fn xz(self) -> (T, Vec2<T>) {
-        (self.y, (self.x, self.z).into())
+    pub fn xz(self) -> Vec2<T> {
+        (self.x, self.z).into()
     }
 
     /// Get two components of the vector.
