@@ -6,6 +6,9 @@
   `set_top`.
 - Implement `Not` for `Vec2`, `Vec3` and `Vec4`.
 - Implement `Hash` for `Vec2`, `Vec3`, `Vec4`, `Rect` and `Padding`.
+- Make sure that all map traits and const traits are implemented for all
+  vectors.
+- Add macro `impl_traits!` for simple implementation of some traits.
 
 ### Fixes
 - `Vec3::xz` now returns the proper value.

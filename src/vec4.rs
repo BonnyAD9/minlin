@@ -7,7 +7,7 @@ use std::{
     },
 };
 
-use crate::{MapExt, RectExt, Vec2};
+use crate::{MapExt, RectExt, Vec2, impl_traits};
 
 /// Four dimensional vector or any 4-tuple-like object (e.g. rectangle).
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
@@ -22,6 +22,14 @@ impl<T> Vec4<T> {
     /// Construct new Vec4.
     pub const fn new(x: T, y: T, z: T, w: T) -> Self {
         Self { x, y, z, w }
+    }
+
+    /// Set all components to the same value.
+    pub const fn same_components(v: T) -> Self
+    where
+        T: Copy,
+    {
+        Self::new(v, v, v, v)
     }
 
     /// Width of rectangle represented by this vector.
@@ -298,6 +306,8 @@ impl<T: PartialOrd> PartialOrd for Vec4<T> {
         }
     }
 }
+
+impl_traits!(Vec4<T> => VecTraits);
 
 macro_rules! op_single {
     ($op:ident, $fn:ident) => {

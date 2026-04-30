@@ -1,6 +1,6 @@
 use std::ops::Range;
 
-use crate::{Cast, Scale, Vec2, Vec3, Vec4};
+use crate::{Vec2, Vec3, Vec4};
 
 /// Trait for types that can be mapped.
 pub trait MapExt: Sized {
@@ -9,32 +9,6 @@ pub trait MapExt: Sized {
 
     /// Map the components.
     fn map<R>(self, f: impl FnMut(Self::Val) -> R) -> Self::This<R>;
-
-    /// Convert the values to the given type using `Into`.
-    fn convert<R>(self) -> Self::This<R>
-    where
-        Self::Val: Into<R>,
-    {
-        self.map(|a| a.into())
-    }
-
-    /// Cast the values to the given type.
-    fn cast<R>(self) -> Self::This<R>
-    where
-        Self::Val: Cast<R>,
-    {
-        self.map(|a| a.cast())
-    }
-
-    /// Scale the components to the given type. The components are scaled with
-    /// their normal range. For floats this range is 0 to 1 and for ints it is
-    /// their full range.
-    fn scale<R>(self) -> Self::This<R>
-    where
-        Self::Val: Scale<R>,
-    {
-        self.map(|a| a.scale())
-    }
 }
 
 impl<T> MapExt for Vec2<T> {

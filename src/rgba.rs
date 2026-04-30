@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut, Mul};
 
-use crate::{Float, MapExt, NormalLimits, Scale, Vec4};
+use crate::{Float, MapExt, NormalLimits, Scale, Vec4, impl_traits};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Rgba<T = u8>(pub Vec4<T>);
@@ -193,3 +193,5 @@ impl<T> MapExt for Rgba<T> {
         Rgba(self.0.map(f))
     }
 }
+
+impl_traits!(Rgba<T> => MapTraits);

@@ -3,6 +3,17 @@ pub trait Scale<T> {
     fn scale(self) -> T;
 }
 
+#[macro_export]
+macro_rules! impl_scale {
+    ($t:ident < $g:ident >) => {
+        impl<$g: $crate::Scale<O>, O> $crate::Scale<$t<O>> for $t<$g> {
+            fn scale(self) -> $t<O> {
+                self.map($g::scale)
+            }
+        }
+    };
+}
+
 macro_rules! impl_scale_int {
     ($($l:ident),* -> $s:ident) => {
         $(

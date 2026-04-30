@@ -10,7 +10,7 @@ use std::{
 
 use crate::{
     Checked, Float, Goniometric, IntoFloat, Isqrt, LargeType, MapExt,
-    NormalLimits, Scale, Sqrt, Vec2, Zero,
+    NormalLimits, Scale, Sqrt, Vec2, Zero, impl_traits,
 };
 
 /// Represents three dimensional vector. Can be also use as color or any
@@ -25,8 +25,16 @@ pub struct Vec3<T = usize> {
 }
 
 impl<T> Vec3<T> {
-    pub fn new(x: T, y: T, z: T) -> Self {
+    pub const fn new(x: T, y: T, z: T) -> Self {
         Self { x, y, z }
+    }
+
+    /// Set all components to the same value.
+    pub const fn same_components(v: T) -> Self
+    where
+        T: Copy,
+    {
+        Self::new(v, v, v)
     }
 
     /// Converts vector reference to vector of reference.
@@ -1122,6 +1130,8 @@ impl<T: PartialOrd> PartialOrd for Vec3<T> {
         }
     }
 }
+
+impl_traits!(Vec3<T> => VecTraits);
 
 macro_rules! op_single {
     ($op:ident, $fn:ident) => {

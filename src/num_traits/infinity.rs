@@ -11,3 +11,12 @@ impl Infinity for f32 {
 impl Infinity for f64 {
     const INFINITY: Self = f64::INFINITY;
 }
+
+#[macro_export]
+macro_rules! impl_infinity {
+    ($t:ident < $g:ident >) => {
+        impl<$g: $crate::Infinity + Copy> $crate::Infinity for $t<$g> {
+            const INFINITY: Self = Self::same_components($g::INFINITY);
+        }
+    };
+}

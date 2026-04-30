@@ -11,3 +11,12 @@ impl NegInfinity for f32 {
 impl NegInfinity for f64 {
     const NEG_INFINITY: Self = f64::NEG_INFINITY;
 }
+
+#[macro_export]
+macro_rules! impl_neg_infinity {
+    ($t:ident < $g:ident >) => {
+        impl<$g: $crate::NegInfinity + Copy> $crate::NegInfinity for $t<$g> {
+            const NEG_INFINITY: Self = Self::same_components($g::NEG_INFINITY);
+        }
+    };
+}
