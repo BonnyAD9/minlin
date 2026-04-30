@@ -9,8 +9,7 @@ use std::{
 };
 
 use crate::{
-    Checked, Float, Goniometric, IntoFloat, Isqrt, LargeType, MapExt,
-    NormalLimits, Scale, Sqrt, Vec2RangeIter, Zero,
+    Cast, Checked, Convert, Float, Goniometric, Infinity, IntoFloat, Isqrt, LargeType, MapExt, NegInfinity, NormalLimits, One, Scale, Sqrt, Two, Vec2RangeIter, Zero
 };
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
@@ -621,12 +620,46 @@ impl<T> Vec2<&T> {
     }
 }
 
-impl<T: Zero> Vec2<T> {
+impl<T: Zero> Zero for Vec2<T> {
     /// 2D vectors with all components set to zero.
-    pub const ZERO: Vec2<T> = Vec2 {
+    const ZERO: Vec2<T> = Vec2 {
         x: T::ZERO,
         y: T::ZERO,
     };
+}
+
+impl<T: One> One for Vec2<T> {
+    const ONE: Self = Vec2::new(T::ONE, T::ONE);
+}
+
+impl<T: Two> Two for Vec2<T> {
+    const TWO: Self = Vec2::new(T::TWO, T::TWO);
+}
+
+impl<T: Infinity> Infinity for Vec2<T> {
+    const INFINITY: Self = Vec2::new(T::INFINITY, T::INFINITY);
+}
+
+impl<T: NegInfinity> NegInfinity for Vec2<T> {
+    const NEG_INFINITY: Self = Vec2::new(T::NEG_INFINITY, T::NEG_INFINITY);
+}
+
+impl<R, T: Cast<R>> Cast<Vec2<R>> for Vec2<T> {
+    fn cast(self) -> Vec2<R> {
+        self.map(T::cast)
+    }
+}
+
+impl<R, T: Scale<R>> Scale<Vec2<R>> for Vec2<T> {
+    fn scale(self) -> Vec2<R> {
+        self.map(T::scale)
+    }
+}
+
+impl<R, T: Convert<R>> Convert<Vec2<R>> for Vec2<T> {
+    fn convert(self) -> Vec2<R> {
+        self.map(T::convert)
+    }
 }
 
 impl<T> From<(T, T)> for Vec2<T> {

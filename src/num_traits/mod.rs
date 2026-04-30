@@ -14,9 +14,13 @@ mod scale;
 mod sqrt;
 mod two;
 mod zero;
+mod neg_infinity;
+mod limits;
+mod convert;
 
 pub use self::{
     cast::*, checked::*, containing_float::*, float::*, goniometric::*,
     infinity::*, into_float::*, isqrt::*, large_type::*, normal_limits::*,
-    one::*, saturating::*, scale::*, sqrt::*, two::*, zero::*,
+    one::*, saturating::*, scale::*, sqrt::*, two::*, zero::*, neg_infinity::*,
+    limits::*, convert::*,
 };
