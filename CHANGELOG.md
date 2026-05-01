@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## future
+## v0.4.1
 ### New features
 - Add methods to `RectExt`: `moved_by`, `set_right`, `set_bottom`, `set_left`,
   `set_top`.
