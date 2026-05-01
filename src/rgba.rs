@@ -148,6 +148,11 @@ impl<T> Rgba<T> {
     {
         Self(Vec4::new(self.x * m, self.y * m, self.z * m, self.w))
     }
+
+    /// Convert this into array.
+    pub fn into_array(self) -> [T; 4] {
+        self.0.into()
+    }
 }
 
 impl<T> Default for Rgba<T>

@@ -895,6 +895,11 @@ impl<T> Vec3<T> {
     {
         self.map(|a| if a < T::ZERO { -a } else { a })
     }
+
+    /// Convert the vector into an array.
+    pub fn into_array(self) -> [T; 3] {
+        self.into()
+    }
 }
 
 impl Vec3<bool> {

@@ -9,6 +9,7 @@
 - Make sure that all map traits and const traits are implemented for all
   vectors.
 - Add macro `impl_traits!` for simple implementation of some traits.
+- Add `into_array` for `Vec2`, `Vec3`, `Vec4` and `Rgba`.
 
 ### Fixes
 - `Vec3::xz` now returns the proper value.

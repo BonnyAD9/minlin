@@ -587,6 +587,11 @@ impl<T> Vec2<T> {
             if s.y { o.y } else { self.y },
         )
     }
+
+    /// Convert vec2 into an array.
+    pub fn into_array(self) -> [T; 2] {
+        self.into()
+    }
 }
 
 impl Vec2<bool> {

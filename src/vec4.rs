@@ -94,6 +94,11 @@ impl<T> Vec4<T> {
         let r: [_; 4] = self.as_mut().into();
         r.into_iter()
     }
+
+    /// Convert the vector into an array.
+    pub fn into_array(self) -> [T; 4] {
+        self.into()
+    }
 }
 
 impl<T> From<(T, T, T, T)> for Vec4<T> {
