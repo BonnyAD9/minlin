@@ -690,7 +690,7 @@ impl<T> Vec3<T> {
     #[allow(clippy::type_complexity)]
     pub fn normalized(
         self,
-    ) -> Vec2<
+    ) -> Vec3<
         <T::Float as Div<
             <<<<T::Float as Mul>::Output as Add>::Output as Add<
                 <T::Float as Mul>::Output,
@@ -717,7 +717,7 @@ impl<T> Vec3<T> {
     {
         let v = self.map(|a| a.into_float());
         let len = v.len();
-        (v.x / len, v.y / len).into()
+        v / len
     }
 
     /// Normalize the vector.
