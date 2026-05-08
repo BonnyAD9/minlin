@@ -1,11 +1,14 @@
 # CHANGELOG
 
 ## future
-### Fixes
-- Fix `Vec3::normalized`.
-
 ### Breaking changes
 - `Vec2` no longer supports operators with range.
+
+### New features
+- `Vec2`, `Vec3` and `Vec4` now implement `FromIterator`.
+
+### Fixes
+- Fix `Vec3::normalized`.
 
 ## v0.4.1
 ### New features

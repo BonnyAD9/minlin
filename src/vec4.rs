@@ -309,4 +309,28 @@ impl<T> MapExt for Vec4<T> {
     }
 }
 
+impl<T: Default> FromIterator<T> for Vec4<T> {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        let mut i = iter.into_iter();
+        Self::new(
+            i.next().unwrap_or_default(),
+            i.next().unwrap_or_default(),
+            i.next().unwrap_or_default(),
+            i.next().unwrap_or_default(),
+        )
+    }
+}
+
+impl<'a, T: Default + Copy> FromIterator<&'a T> for Vec4<T> {
+    fn from_iter<I: IntoIterator<Item = &'a T>>(iter: I) -> Self {
+        let mut i = iter.into_iter().copied();
+        Self::new(
+            i.next().unwrap_or_default(),
+            i.next().unwrap_or_default(),
+            i.next().unwrap_or_default(),
+            i.next().unwrap_or_default(),
+        )
+    }
+}
+
 impl_traits!(Vec4<T> [<Array, 4>, <Tuple, (x, y, z, w)>] => VecTraits);
