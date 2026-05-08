@@ -3,6 +3,7 @@
 ## future
 ### Breaking changes
 - `Vec2` no longer supports operators with range.
+- Remove `PartialOrd` implementation for vectors.
 
 ### New features
 - `Vec2`, `Vec3` and `Vec4` now implement `FromIterator`.

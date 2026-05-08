@@ -1,5 +1,4 @@
 use std::{
-    cmp::Ordering,
     fmt::Display,
     mem,
     ops::{
@@ -1090,31 +1089,6 @@ impl<'a, T> IntoIterator for &'a mut Vec3<T> {
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter_mut()
-    }
-}
-
-impl<T: PartialOrd> PartialOrd for Vec3<T> {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        match (
-            self.x.partial_cmp(&other.x)?,
-            self.y.partial_cmp(&other.y)?,
-            self.z.partial_cmp(&other.z)?,
-        ) {
-            (Ordering::Equal, Ordering::Equal, Ordering::Equal) => {
-                Some(Ordering::Equal)
-            }
-            (
-                Ordering::Less | Ordering::Equal,
-                Ordering::Less | Ordering::Equal,
-                Ordering::Less | Ordering::Equal,
-            ) => Some(Ordering::Less),
-            (
-                Ordering::Greater | Ordering::Equal,
-                Ordering::Greater | Ordering::Equal,
-                Ordering::Greater | Ordering::Equal,
-            ) => Some(Ordering::Greater),
-            _ => None,
-        }
     }
 }
 
