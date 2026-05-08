@@ -141,6 +141,10 @@ impl<T> MapExt for Padding<T> {
     fn map<R>(self, f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
         Padding(self.0.map(f))
     }
+
+    fn mutate(&mut self, f: impl FnMut(&mut Self::Val)) {
+        self.0.mutate(f);
+    }
 }
 
 impl<A, T> Add<A> for Padding<T>

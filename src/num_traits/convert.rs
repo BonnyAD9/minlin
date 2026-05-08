@@ -4,7 +4,7 @@ pub trait Convert<O> {
 
 #[macro_export]
 macro_rules! impl_convert {
-    ($t:ident < $g:ident >) => {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         impl<$g: $crate::Convert<O>, O> $crate::Convert<$t<O>> for $t<$g> {
             fn convert(self) -> $t<O> {
                 self.map($g::convert)

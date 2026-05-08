@@ -1,7 +1,5 @@
 use std::ops::Range;
 
-use crate::{Vec2, Vec3, Vec4};
-
 /// Trait for types that can be mapped.
 pub trait MapExt: Sized {
     type Val;
@@ -9,15 +7,9 @@ pub trait MapExt: Sized {
 
     /// Map the components.
     fn map<R>(self, f: impl FnMut(Self::Val) -> R) -> Self::This<R>;
-}
 
-impl<T> MapExt for Vec2<T> {
-    type Val = T;
-    type This<R> = Vec2<R>;
-
-    fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
-        Vec2::new(f(self.x), f(self.y))
-    }
+    /// Map the components in place.
+    fn mutate(&mut self, f: impl FnMut(&mut Self::Val));
 }
 
 impl<T> MapExt for Range<T> {
@@ -26,6 +18,11 @@ impl<T> MapExt for Range<T> {
 
     fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
         f(self.start)..f(self.end)
+    }
+
+    fn mutate(&mut self, mut f: impl FnMut(&mut Self::Val)) {
+        f(&mut self.start);
+        f(&mut self.end);
     }
 }
 
@@ -36,22 +33,9 @@ impl<T> MapExt for (T, T) {
     fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
         (f(self.0), f(self.1))
     }
-}
 
-impl<T> MapExt for Vec3<T> {
-    type Val = T;
-    type This<R> = Vec3<R>;
-
-    fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
-        Vec3::new(f(self.x), f(self.y), f(self.z))
-    }
-}
-
-impl<T> MapExt for Vec4<T> {
-    type Val = T;
-    type This<R> = Vec4<R>;
-
-    fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
-        Vec4::new(f(self.x), f(self.y), f(self.z), f(self.w))
+    fn mutate(&mut self, mut f: impl FnMut(&mut Self::Val)) {
+        f(&mut self.0);
+        f(&mut self.1);
     }
 }

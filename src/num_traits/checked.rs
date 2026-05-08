@@ -12,7 +12,7 @@ pub trait Checked: Sized {
     fn checked_mul(self, other: Self) -> Option<Self>;
 }
 
-macro_rules! impl_saturating {
+macro_rules! impl_base_checked {
     ($($i:ident),*) => {
         $(impl Checked for $i {
             fn checked_sub(self, other: Self) -> Option<Self> {
@@ -30,6 +30,6 @@ macro_rules! impl_saturating {
     };
 }
 
-impl_saturating!(
+impl_base_checked!(
     u8, i8, u16, i16, u32, i32, u64, i64, usize, isize, u128, i128
 );

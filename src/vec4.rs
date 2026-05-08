@@ -7,7 +7,7 @@ use std::{
     },
 };
 
-use crate::{MapExt, RectExt, Vec2, impl_traits};
+use crate::{Array, CompArithm, MapExt, RectExt, Tuple, Vec2, impl_traits};
 
 /// Four dimensional vector or any 4-tuple-like object (e.g. rectangle).
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
@@ -262,25 +262,6 @@ impl<'a, T> IntoIterator for &'a mut Vec4<T> {
     }
 }
 
-impl<T: Neg> Neg for Vec4<T> {
-    type Output = Vec4<T::Output>;
-
-    fn neg(self) -> Self::Output {
-        self.map(|x| -x)
-    }
-}
-
-impl<T> Not for Vec4<T>
-where
-    T: Not,
-{
-    type Output = Vec4<T::Output>;
-
-    fn not(self) -> Self::Output {
-        self.map(|a| !a)
-    }
-}
-
 impl<T: PartialOrd> PartialOrd for Vec4<T> {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         match (
@@ -312,139 +293,20 @@ impl<T: PartialOrd> PartialOrd for Vec4<T> {
     }
 }
 
-impl_traits!(Vec4<T> => VecTraits);
+impl<T> MapExt for Vec4<T> {
+    type Val = T;
+    type This<R> = Vec4<R>;
 
-macro_rules! op_single {
-    ($op:ident, $fn:ident) => {
-        impl<Left, Right> $op<Right> for Vec4<Left>
-        where
-            Left: $op<Right>,
-            Right: Copy,
-        {
-            type Output = Vec4<Left::Output>;
+    fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
+        Vec4::new(f(self.x), f(self.y), f(self.z), f(self.w))
+    }
 
-            fn $fn(self, rhs: Right) -> Self::Output {
-                self.map(|x| x.$fn(rhs))
-            }
-        }
-    };
+    fn mutate(&mut self, mut f: impl FnMut(&mut Self::Val)) {
+        f(&mut self.x);
+        f(&mut self.y);
+        f(&mut self.z);
+        f(&mut self.w);
+    }
 }
 
-macro_rules! op_assign_single {
-    ($op:ident, $fn:ident) => {
-        impl<Left, Right> $op<Right> for Vec4<Left>
-        where
-            Left: $op<Right>,
-            Right: Copy,
-        {
-            fn $fn(&mut self, rhs: Right) {
-                self.x.$fn(rhs);
-                self.y.$fn(rhs);
-                self.z.$fn(rhs);
-            }
-        }
-    };
-}
-
-macro_rules! op_quadruple {
-    ($op:ident, $fn:ident) => {
-        impl<Left, Right> $op<Vec4<Right>> for Vec4<Left>
-        where
-            Left: $op<Right>,
-        {
-            type Output = Vec4<Left::Output>;
-
-            fn $fn(self, rhs: Vec4<Right>) -> Self::Output {
-                (
-                    self.x.$fn(rhs.x),
-                    self.y.$fn(rhs.y),
-                    self.z.$fn(rhs.z),
-                    self.w.$fn(rhs.w),
-                )
-                    .into()
-            }
-        }
-
-        impl<Left, Right> $op<(Right, Right, Right, Right)> for Vec4<Left>
-        where
-            Left: $op<Right>,
-        {
-            type Output = Vec4<Left::Output>;
-
-            fn $fn(
-                self,
-                (x, y, z, w): (Right, Right, Right, Right),
-            ) -> Self::Output {
-                (self.x.$fn(x), self.y.$fn(y), self.z.$fn(z), self.w.$fn(w))
-                    .into()
-            }
-        }
-
-        impl<Left, Right> $op<[Right; 4]> for Vec4<Left>
-        where
-            Left: $op<Right>,
-        {
-            type Output = Vec4<Left::Output>;
-
-            fn $fn(self, [x, y, z, w]: [Right; 4]) -> Self::Output {
-                (self.x.$fn(x), self.y.$fn(y), self.z.$fn(z), self.w.$fn(w))
-                    .into()
-            }
-        }
-    };
-}
-
-macro_rules! op_assign_quadruple {
-    ($op:ident, $fn:ident) => {
-        impl<Left, Right> $op<Vec4<Right>> for Vec4<Left>
-        where
-            Left: $op<Right>,
-        {
-            fn $fn(&mut self, rhs: Vec4<Right>) {
-                self.x.$fn(rhs.x);
-                self.y.$fn(rhs.y);
-                self.z.$fn(rhs.z);
-                self.w.$fn(rhs.w);
-            }
-        }
-
-        impl<Left, Right> $op<(Right, Right, Right, Right)> for Vec4<Left>
-        where
-            Left: $op<Right>,
-        {
-            fn $fn(&mut self, (x, y, z, w): (Right, Right, Right, Right)) {
-                self.x.$fn(x);
-                self.y.$fn(y);
-                self.z.$fn(z);
-                self.w.$fn(w);
-            }
-        }
-
-        impl<Left, Right> $op<[Right; 4]> for Vec4<Left>
-        where
-            Left: $op<Right>,
-        {
-            fn $fn(&mut self, [x, y, z, w]: [Right; 4]) {
-                self.x.$fn(x);
-                self.y.$fn(y);
-                self.z.$fn(z);
-                self.w.$fn(w);
-            }
-        }
-    };
-}
-
-op_single!(Mul, mul);
-op_assign_single!(MulAssign, mul_assign);
-
-op_single!(Div, div);
-op_assign_single!(DivAssign, div_assign);
-
-op_single!(Rem, rem);
-op_assign_single!(RemAssign, rem_assign);
-
-op_quadruple!(Add, add);
-op_assign_quadruple!(AddAssign, add_assign);
-
-op_quadruple!(Sub, sub);
-op_assign_quadruple!(SubAssign, sub_assign);
+impl_traits!(Vec4<T> [<Array, 4>, <Tuple, (x, y, z, w)>] => VecTraits);

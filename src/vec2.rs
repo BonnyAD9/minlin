@@ -9,8 +9,9 @@ use std::{
 };
 
 use crate::{
-    Checked, Float, Goniometric, IntoFloat, Isqrt, LargeType, MapExt,
-    NormalLimits, Scale, Sqrt, Vec2RangeIter, Zero, impl_traits,
+    Array, Checked, CompArithm, Float, Goniometric, IntoFloat, Isqrt,
+    LargeType, MapExt, NormalLimits, Scale, Sqrt, Tuple, Vec2RangeIter, Zero,
+    impl_traits,
 };
 
 /// Represents two dimensional vector. Can be used as vector, point, size or
@@ -634,8 +635,6 @@ impl<T> Vec2<&T> {
     }
 }
 
-impl_traits!(Vec2<T> => VecTraits);
-
 impl<T> From<(T, T)> for Vec2<T> {
     fn from((x, y): (T, T)) -> Self {
         Self { x, y }
@@ -762,28 +761,6 @@ impl<'a, T> IntoIterator for &'a mut Vec2<T> {
     }
 }
 
-impl<T> Neg for Vec2<T>
-where
-    T: Neg,
-{
-    type Output = Vec2<T::Output>;
-
-    fn neg(self) -> Self::Output {
-        (-self.x, -self.y).into()
-    }
-}
-
-impl<T> Not for Vec2<T>
-where
-    T: Not,
-{
-    type Output = Vec2<T::Output>;
-
-    fn not(self) -> Self::Output {
-        (!self.x, !self.y).into()
-    }
-}
-
 impl<T: PartialOrd> PartialOrd for Vec2<T> {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         match (self.x.partial_cmp(&other.x)?, self.y.partial_cmp(&other.y)?) {
@@ -807,130 +784,18 @@ impl<T> AsRef<Vec2<T>> for Vec2<T> {
     }
 }
 
-macro_rules! op_single {
-    ($op:ident, $fn:ident) => {
-        impl<Left, Right> $op<Right> for Vec2<Left>
-        where
-            Left: $op<Right>,
-            Right: Copy,
-        {
-            type Output = Vec2<Left::Output>;
+impl<T> MapExt for Vec2<T> {
+    type Val = T;
+    type This<R> = Vec2<R>;
 
-            fn $fn(self, rhs: Right) -> Self::Output {
-                (self.x.$fn(rhs), self.y.$fn(rhs)).into()
-            }
-        }
-    };
+    fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
+        Vec2::new(f(self.x), f(self.y))
+    }
+
+    fn mutate(&mut self, mut f: impl FnMut(&mut Self::Val)) {
+        f(&mut self.x);
+        f(&mut self.y);
+    }
 }
 
-macro_rules! op_assign_single {
-    ($op:ident, $fn:ident) => {
-        impl<Left, Right> $op<Right> for Vec2<Left>
-        where
-            Left: $op<Right>,
-            Right: Copy,
-        {
-            fn $fn(&mut self, rhs: Right) {
-                self.x.$fn(rhs);
-                self.y.$fn(rhs);
-            }
-        }
-    };
-}
-
-macro_rules! op_double {
-    ($op:ident, $fn:ident) => {
-        impl<Left, Right> $op<Vec2<Right>> for Vec2<Left>
-        where
-            Left: $op<Right>,
-        {
-            type Output = Vec2<Left::Output>;
-
-            fn $fn(self, rhs: Vec2<Right>) -> Self::Output {
-                (self.x.$fn(rhs.x), self.y.$fn(rhs.y)).into()
-            }
-        }
-
-        impl<Left, Right> $op<(Right, Right)> for Vec2<Left>
-        where
-            Left: $op<Right>,
-        {
-            type Output = Vec2<Left::Output>;
-
-            fn $fn(self, (x, y): (Right, Right)) -> Self::Output {
-                (self.x.$fn(x), self.y.$fn(y)).into()
-            }
-        }
-
-        impl<Left, Right> $op<[Right; 2]> for Vec2<Left>
-        where
-            Left: $op<Right>,
-        {
-            type Output = Vec2<Left::Output>;
-
-            fn $fn(self, [x, y]: [Right; 2]) -> Self::Output {
-                (self.x.$fn(x), self.y.$fn(y)).into()
-            }
-        }
-
-        impl<Left, Right> $op<Range<Right>> for Vec2<Left>
-        where
-            Left: $op<Right>,
-        {
-            type Output = Vec2<Left::Output>;
-
-            fn $fn(self, rhs: Range<Right>) -> Self::Output {
-                (self.x.$fn(rhs.start), self.y.$fn(rhs.end)).into()
-            }
-        }
-    };
-}
-
-macro_rules! op_assign_double {
-    ($op:ident, $fn:ident) => {
-        impl<Left, Right> $op<Vec2<Right>> for Vec2<Left>
-        where
-            Left: $op<Right>,
-        {
-            fn $fn(&mut self, rhs: Vec2<Right>) {
-                self.x.$fn(rhs.x);
-                self.y.$fn(rhs.y);
-            }
-        }
-
-        impl<Left, Right> $op<(Right, Right)> for Vec2<Left>
-        where
-            Left: $op<Right>,
-        {
-            fn $fn(&mut self, (x, y): (Right, Right)) {
-                self.x.$fn(x);
-                self.y.$fn(y);
-            }
-        }
-
-        impl<Left, Right> $op<[Right; 2]> for Vec2<Left>
-        where
-            Left: $op<Right>,
-        {
-            fn $fn(&mut self, [x, y]: [Right; 2]) {
-                self.x.$fn(x);
-                self.y.$fn(y);
-            }
-        }
-    };
-}
-
-op_single!(Mul, mul);
-op_assign_single!(MulAssign, mul_assign);
-
-op_single!(Div, div);
-op_assign_single!(DivAssign, div_assign);
-
-op_single!(Rem, rem);
-op_assign_single!(RemAssign, rem_assign);
-
-op_double!(Add, add);
-op_assign_double!(AddAssign, add_assign);
-
-op_double!(Sub, sub);
-op_assign_double!(SubAssign, sub_assign);
+impl_traits!(Vec2<T> [<Array, 2>, <Tuple, (x, y)>] => VecTraits);

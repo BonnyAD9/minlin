@@ -8,7 +8,7 @@ pub trait Cast<O> {
 
 #[macro_export]
 macro_rules! impl_cast {
-    ($t:ident < $g:ident >) => {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         impl<$g: $crate::Cast<O>, O> $crate::Cast<$t<O>> for $t<$g> {
             fn cast(self) -> $t<O> {
                 self.map($g::cast)

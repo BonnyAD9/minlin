@@ -14,7 +14,7 @@ impl Infinity for f64 {
 
 #[macro_export]
 macro_rules! impl_infinity {
-    ($t:ident < $g:ident >) => {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         impl<$g: $crate::Infinity + Copy> $crate::Infinity for $t<$g> {
             const INFINITY: Self = Self::same_components($g::INFINITY);
         }

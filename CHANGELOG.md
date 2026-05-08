@@ -4,6 +4,9 @@
 ### Fixes
 - Fix `Vec3::normalized`.
 
+### Breaking changes
+- `Vec2` no longer supports operators with range.
+
 ## v0.4.1
 ### New features
 - Add methods to `RectExt`: `moved_by`, `set_right`, `set_bottom`, `set_left`,

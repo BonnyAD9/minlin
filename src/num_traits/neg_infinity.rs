@@ -14,7 +14,7 @@ impl NegInfinity for f64 {
 
 #[macro_export]
 macro_rules! impl_neg_infinity {
-    ($t:ident < $g:ident >) => {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         impl<$g: $crate::NegInfinity + Copy> $crate::NegInfinity for $t<$g> {
             const NEG_INFINITY: Self = Self::same_components($g::NEG_INFINITY);
         }

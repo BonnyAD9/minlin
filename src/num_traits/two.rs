@@ -4,7 +4,7 @@ pub trait Two {
 
 #[macro_export]
 macro_rules! impl_two {
-    ($t:ident < $g:ident >) => {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         impl<$g: $crate::Two + Copy> $crate::Two for $t<$g> {
             const TWO: Self = Self::same_components($g::TWO);
         }

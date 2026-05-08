@@ -4,7 +4,7 @@ pub trait Zero {
 
 #[macro_export]
 macro_rules! impl_zero {
-    ($t:ident < $g:ident >) => {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         impl<$g: $crate::Zero + Copy> $crate::Zero for $t<$g> {
             const ZERO: Self = Self::same_components($g::ZERO);
         }

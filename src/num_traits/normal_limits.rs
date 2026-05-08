@@ -6,6 +6,16 @@ pub trait NormalLimits {
     const NORM_MIN: Self;
 }
 
+#[macro_export]
+macro_rules! impl_normal_limits {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
+        impl<$g: $crate::NormalLimits + Copy> $crate::NormalLimits for $t<$g> {
+            const NORM_MAX: Self = Self::same_components($g::NORM_MAX);
+            const NORM_MIN: Self = Self::same_components($g::NORM_MIN);
+        }
+    };
+}
+
 macro_rules! impl_normal_limits_int {
     ($($i:ident),*) => {
         $(impl NormalLimits for $i {

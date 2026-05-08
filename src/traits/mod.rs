@@ -1,6 +1,6 @@
 mod comp_arithm;
+mod impl_traits;
 mod map_ext;
-mod map_traits;
 mod range_ext;
 mod rect_ext;
 mod two_component;
