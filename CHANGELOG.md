@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## future
+## v0.5.0
 ### Breaking changes
 - `Vec2` no longer supports operators with range.
 - Change `PartialOrd` implementation for vectors.
