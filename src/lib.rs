@@ -1,3 +1,4 @@
+mod mat2;
 mod num_traits;
 mod padding;
 mod rect;
@@ -10,7 +11,7 @@ mod vec3_range_iter;
 mod vec4;
 
 pub use self::{
-    num_traits::*, padding::*, rect::*, rgba::*, traits::*, vec2::*,
+    mat2::*, num_traits::*, padding::*, rect::*, rgba::*, traits::*, vec2::*,
     vec2_range_iter::*, vec3::*, vec3_range_iter::*, vec4::*,
 };
 

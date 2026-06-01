@@ -1,4 +1,7 @@
-use std::ops::{Range, Sub};
+use std::{
+    ops::{self, Sub},
+    range::Range,
+};
 
 use crate::{TwoComponent, Vec2};
 
@@ -265,4 +268,5 @@ pub trait RangeExt: Sized + TwoComponent {
 }
 
 impl<T> RangeExt for Vec2<T> {}
+impl<T> RangeExt for ops::Range<T> {}
 impl<T> RangeExt for Range<T> {}

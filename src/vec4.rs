@@ -1,15 +1,14 @@
 use std::{
     fmt::Display,
-    ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg,
-        Not, Rem, RemAssign, Sub, SubAssign,
-    },
+    ops::{Add, AddAssign, Index, IndexMut, Mul, Neg, Not, Sub, SubAssign},
 };
 
 use crate::{Array, CompArithm, MapExt, RectExt, Tuple, Vec2, impl_traits};
 
 /// Four dimensional vector or any 4-tuple-like object (e.g. rectangle).
-#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+#[derive(
+    Debug, Copy, Clone, Default, PartialEq, Eq, Hash, PartialOrd, Ord,
+)]
 pub struct Vec4<T = usize> {
     pub x: T,
     pub y: T,

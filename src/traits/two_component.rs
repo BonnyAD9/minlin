@@ -1,4 +1,4 @@
-use std::ops::Range;
+use std::{ops, range::Range};
 
 use crate::Vec2;
 
@@ -59,11 +59,31 @@ impl<T> TwoComponent for (T, T) {
     }
 }
 
-impl<T> TwoComponent for Range<T> {
+impl<T> TwoComponent for ops::Range<T> {
     type Val = T;
 
     fn from_components(c1: Self::Val, c2: Self::Val) -> Self {
         c1..c2
+    }
+
+    fn to_components(self) -> (Self::Val, Self::Val) {
+        (self.start, self.end)
+    }
+
+    fn comp1(&self) -> &Self::Val {
+        &self.start
+    }
+
+    fn comp2(&self) -> &Self::Val {
+        &self.end
+    }
+}
+
+impl<T> TwoComponent for Range<T> {
+    type Val = T;
+
+    fn from_components(c1: Self::Val, c2: Self::Val) -> Self {
+        Self { start: c1, end: c2 }
     }
 
     fn to_components(self) -> (Self::Val, Self::Val) {

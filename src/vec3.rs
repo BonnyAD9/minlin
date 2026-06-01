@@ -2,8 +2,8 @@ use std::{
     fmt::Display,
     mem,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg,
-        Not, Rem, RemAssign, Sub, SubAssign,
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, Neg, Not, Rem,
+        Sub, SubAssign,
     },
 };
 
@@ -17,7 +17,9 @@ use crate::{
 /// 3-tuple-like object where vector operations are benefit.
 ///
 /// It is ment to be as convinient as possible to work with in many use cases.
-#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+#[derive(
+    Debug, Copy, Clone, Default, PartialEq, Eq, Hash, PartialOrd, Ord,
+)]
 pub struct Vec3<T = usize> {
     pub x: T,
     pub y: T,

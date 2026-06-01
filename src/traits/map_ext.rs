@@ -1,4 +1,4 @@
-use std::ops::Range;
+use std::{ops, range::Range};
 
 /// Trait for types that can be mapped.
 pub trait MapExt: Sized {
@@ -12,12 +12,29 @@ pub trait MapExt: Sized {
     fn mutate(&mut self, f: impl FnMut(&mut Self::Val));
 }
 
+impl<T> MapExt for ops::Range<T> {
+    type Val = T;
+    type This<R> = ops::Range<R>;
+
+    fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
+        f(self.start)..f(self.end)
+    }
+
+    fn mutate(&mut self, mut f: impl FnMut(&mut Self::Val)) {
+        f(&mut self.start);
+        f(&mut self.end);
+    }
+}
+
 impl<T> MapExt for Range<T> {
     type Val = T;
     type This<R> = Range<R>;
 
     fn map<R>(self, mut f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
-        f(self.start)..f(self.end)
+        Range {
+            start: f(self.start),
+            end: f(self.end),
+        }
     }
 
     fn mutate(&mut self, mut f: impl FnMut(&mut Self::Val)) {

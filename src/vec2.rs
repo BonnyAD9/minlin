@@ -1,10 +1,10 @@
 use std::{
     fmt::Display,
     ops::{
-        Add, AddAssign, Bound, Div, DivAssign, Index, IndexMut, Mul,
-        MulAssign, Neg, Not, Range, RangeBounds, Rem, RemAssign, Sub,
-        SubAssign,
+        self, Add, AddAssign, Bound, Div, DivAssign, Index, IndexMut, Mul,
+        Neg, Not, RangeBounds, Rem, Sub, SubAssign,
     },
+    range::Range,
 };
 
 use crate::{
@@ -17,7 +17,9 @@ use crate::{
 /// any tuple-like object where vector math operations are benefit.
 ///
 /// It is meant to be as convinient as possible to work with in many use cases.
-#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+#[derive(
+    Debug, Copy, Clone, Default, PartialEq, Eq, Hash, PartialOrd, Ord,
+)]
 pub struct Vec2<T = usize> {
     /// The first coordinate of the vector (x, w, [0]).
     pub x: T,
@@ -646,6 +648,15 @@ impl<T> From<[T; 2]> for Vec2<T> {
     }
 }
 
+impl<T> From<ops::Range<T>> for Vec2<T> {
+    fn from(value: ops::Range<T>) -> Self {
+        Self {
+            x: value.start,
+            y: value.end,
+        }
+    }
+}
+
 impl<T> From<Range<T>> for Vec2<T> {
     fn from(value: Range<T>) -> Self {
         Self {
@@ -667,9 +678,18 @@ impl<T> From<Vec2<T>> for [T; 2] {
     }
 }
 
-impl<T> From<Vec2<T>> for Range<T> {
+impl<T> From<Vec2<T>> for ops::Range<T> {
     fn from(value: Vec2<T>) -> Self {
         value.x..value.y
+    }
+}
+
+impl<T> From<Vec2<T>> for Range<T> {
+    fn from(value: Vec2<T>) -> Self {
+        Self {
+            start: value.x,
+            end: value.y,
+        }
     }
 }
 

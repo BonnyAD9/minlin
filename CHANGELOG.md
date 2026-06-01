@@ -3,10 +3,13 @@
 ## future
 ### Breaking changes
 - `Vec2` no longer supports operators with range.
-- Remove `PartialOrd` implementation for vectors.
+- Change `PartialOrd` implementation for vectors.
+- `Vec2::range` now returns the new range.
 
 ### New features
 - `Vec2`, `Vec3` and `Vec4` now implement `FromIterator`.
+- New type `Mat2`.
+- Incorporate the new range.
 
 ### Fixes
 - Fix `Vec3::normalized`.

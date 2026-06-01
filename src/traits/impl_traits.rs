@@ -101,6 +101,45 @@ macro_rules! impl_c_add_assign {
 }
 
 #[macro_export]
+macro_rules! impl_add {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
+        impl<$g: std::ops::Add<O>, O> std::ops::Add<$t<O>> for $t<$g> {
+            type Output = $t<$g::Output>;
+
+            fn add(self, other: $t<O>) -> Self::Output {
+                $t(self.0 + other.0)
+            }
+        }
+
+        $($(impl<$g: std::ops::Add<O>, O> std::ops::Add<$a!(O $(, $p)?)> for $t<$g> {
+            type Output = $t<$g::Output>;
+
+            fn add(self, other: $a!(O $(, $p)?)) -> Self::Output {
+                $t(self.0 + other.0.into())
+            }
+        })*)?
+    };
+}
+
+#[macro_export]
+macro_rules! impl_add_assign {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
+        impl<$g: std::ops::AddAssign<O>, O> std::ops::AddAssign<$t<O>> for $t<$g> {
+            fn add_assign(&mut self, other: $t<O>) {
+                self.0 += other.0
+            }
+        }
+
+        $($(impl<$g: AddAssign<O>, O> AddAssign<$a!(O $(, $p)?)> for $t<$g> {
+            fn add_assign(&mut self, other: $a!(O $(, $p)?)) {
+                let o: $g<O> = other.into();
+                self.0 += o.0;
+            }
+        })*)?
+    };
+}
+
+#[macro_export]
 macro_rules! impl_c_sub {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         impl<$g: Sub<O>, O> Sub<$t<O>> for $t<$g> {
@@ -154,7 +193,9 @@ macro_rules! impl_s_mul {
 #[macro_export]
 macro_rules! impl_s_mul_assign {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: MulAssign<O>, O: Copy> MulAssign<O> for $t<$g> {
+        impl<$g: std::ops::MulAssign<O>, O: Copy> std::ops::MulAssign<O>
+            for $t<$g>
+        {
             fn mul_assign(&mut self, other: O) {
                 self.mutate(|a| *a *= other);
             }
@@ -165,7 +206,7 @@ macro_rules! impl_s_mul_assign {
 #[macro_export]
 macro_rules! impl_s_div {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: Div<O>, O: Copy> Div<O> for $t<$g> {
+        impl<$g: std::ops::Div<O>, O: Copy> std::ops::Div<O> for $t<$g> {
             type Output = $t<$g::Output>;
 
             fn div(self, other: O) -> Self::Output {
@@ -178,7 +219,9 @@ macro_rules! impl_s_div {
 #[macro_export]
 macro_rules! impl_s_div_assign {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: DivAssign<O>, O: Copy> DivAssign<O> for $t<$g> {
+        impl<$g: std::ops::DivAssign<O>, O: Copy> std::ops::DivAssign<O>
+            for $t<$g>
+        {
             fn div_assign(&mut self, other: O) {
                 self.mutate(|a| *a /= other);
             }
@@ -189,7 +232,7 @@ macro_rules! impl_s_div_assign {
 #[macro_export]
 macro_rules! impl_s_rem {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: Rem<O>, O: Copy> Rem<O> for $t<$g> {
+        impl<$g: std::ops::Rem<O>, O: Copy> std::ops::Rem<O> for $t<$g> {
             type Output = $t<$g::Output>;
 
             fn rem(self, other: O) -> Self::Output {
@@ -202,7 +245,9 @@ macro_rules! impl_s_rem {
 #[macro_export]
 macro_rules! impl_s_rem_assign {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: RemAssign<O>, O: Copy> RemAssign<O> for $t<$g> {
+        impl<$g: std::ops::RemAssign<O>, O: Copy> std::ops::RemAssign<O>
+            for $t<$g>
+        {
             fn rem_assign(&mut self, other: O) {
                 self.mutate(|a| *a %= other);
             }
