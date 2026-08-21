@@ -404,7 +404,7 @@ impl<T> Vec2<T> {
         T: Copy,
         I: Copy + Rem<T, Output = R> + Div<T, Output = R>,
     {
-        (i % self.y, i / self.y).into()
+        (i % self.x, i / self.x).into()
     }
 
     /// Get index corresponding to pos to 1D container that represents 2D space
