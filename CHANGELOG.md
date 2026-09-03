@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## future
+## v0.5.1
 ### Fixes
 - Fix `Vec2::pos_of_idx`.
 
