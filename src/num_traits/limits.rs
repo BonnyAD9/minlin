@@ -6,6 +6,7 @@ pub trait Limits {
     const MAX: Self;
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_limits {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {

@@ -2,12 +2,22 @@ pub trait Convert<O> {
     fn convert(self) -> O;
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_convert {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         impl<$g: $crate::Convert<O>, O> $crate::Convert<$t<O>> for $t<$g> {
             fn convert(self) -> $t<O> {
                 self.map($g::convert)
+            }
+        }
+
+        impl<$g> $t<$g> {
+            pub fn convert_to<O>(self) -> $t<O>
+            where
+                $g: $crate::Convert<O>,
+            {
+                $crate::Convert::<$t<O>>::convert(self)
             }
         }
     };

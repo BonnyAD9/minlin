@@ -1,6 +1,9 @@
 use std::ops::{Add, AddAssign, Deref, DerefMut, Range, Sub, SubAssign};
 
-use crate::{One, Padding, RectExt, Vec2, Vec2RangeIter, Vec4, Zero};
+use crate::{
+    MapExt, One, Padding, RectExt, Vec2, Vec2RangeIter, Vec4, Zero,
+    impl_traits,
+};
 
 /// Rectangle.
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
@@ -154,3 +157,18 @@ where
         *self = *self - rhs;
     }
 }
+
+impl<T> MapExt for Rect<T> {
+    type Val = T;
+    type This<R> = Rect<R>;
+
+    fn map<R>(self, f: impl FnMut(Self::Val) -> R) -> Self::This<R> {
+        Rect(self.0.map(f))
+    }
+
+    fn mutate(&mut self, f: impl FnMut(&mut Self::Val)) {
+        self.0.mutate(f);
+    }
+}
+
+impl_traits!(Rect<T> => MapTraits);

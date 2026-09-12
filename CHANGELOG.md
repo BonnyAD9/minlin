@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## future
+### New features
+- New helper methods `cast_to` and `convert_to` for all types that implement
+  `Cast` and `Convert`.
+- New function `mix` for all vector types for linear combination.
+- `Rgba` has now all the typical vector implementations.
+- `Rect` now implements map and its derived functions.
+
+### Documentation
+- Helper macros are now hidden in documentation.
+
 ## v0.5.1
 ### Fixes
 - Fix `Vec2::pos_of_idx`.

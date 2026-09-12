@@ -12,6 +12,7 @@ impl NegInfinity for f64 {
     const NEG_INFINITY: Self = f64::NEG_INFINITY;
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_neg_infinity {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {

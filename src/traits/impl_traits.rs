@@ -1,3 +1,4 @@
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_traits {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),* $(,)?])? =>
@@ -7,12 +8,15 @@ macro_rules! impl_traits {
             $t < $g > $([$(<$a $(,$p)?>),*])?
         ); );
 
-        impl_traits!($t < $g > $([$(<$a $(, $p)?>),*])? => $($next_traits)*);
+        $crate::impl_traits!(
+            $t < $g > $([$(<$a $(, $p)?>),*])? => $($next_traits)*
+        );
     };
 
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),* $(,)?])? => ) => { }
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! second {
     ($a:tt, $b:tt) => {
@@ -20,6 +24,7 @@ macro_rules! second {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! Array {
     ($t:ident, $l:literal) => {
@@ -27,6 +32,7 @@ macro_rules! Array {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! Tuple {
     ($t:ident, ($($c:ident),*)) => {
@@ -34,6 +40,7 @@ macro_rules! Tuple {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_map_traits {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
@@ -43,6 +50,7 @@ macro_rules! impl_map_traits {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_const_traits {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
@@ -52,20 +60,52 @@ macro_rules! impl_const_traits {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_vec_traits {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         $crate::impl_traits!($t < $g > $([$(<$a $(, $p)?>),*])? =>
             MapTraits ConstTraits CAdd CAddAssign CSub CSubAssign SMul
-            SMulAssign SDiv SDivAssign SRem SRemAssign CNeg CNot
+            SMulAssign SDiv SDivAssign SRem SRemAssign CNeg CNot Mix
         );
     };
 }
 
+#[doc(hidden)]
+#[macro_export]
+macro_rules! impl_mix {
+    ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
+        impl<$g> $t<$g> {
+            /// Mix this and other instance in the ratio given by `amt`. `amt`
+            /// determines how much of `other` will be mixed into `self`.
+            ///
+            /// This is equivalent to `(self * (1 - amt) + other * amt)` for
+            /// each component to self and other.
+            pub fn mix(self, amt: $g::Float, other: impl Into<Self>) -> Self
+            where
+                $g: $crate::ContainingFloat,
+                $g::Float: std::ops::Mul<Output = $g::Float>
+                    + std::ops::Add<Output = $g::Float>
+                    + std::ops::Sub<Output = $g::Float>
+                    + $crate::Cast<$g>
+                    + $crate::One
+                    + Copy,
+            {
+                $crate::CompArithm::cjoin(self, other, |a, b| {
+                    let one = <$g::Float as $crate::One>::ONE;
+                    let res = a.to_float() * (one - amt) + b.to_float() * amt;
+                    $crate::Cast::<$g>::cast(res)
+                })
+            }
+        }
+    };
+}
+
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_c_add {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: Add<O>, O> Add<$t<O>> for $t<$g> {
+        impl<$g: std::ops::Add<O>, O> std::ops::Add<$t<O>> for $t<$g> {
             type Output = $t<$g::Output>;
 
             fn add(self, other: $t<O>) -> Self::Output {
@@ -83,10 +123,14 @@ macro_rules! impl_c_add {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_c_add_assign {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: AddAssign<O>, O> AddAssign<$t<O>> for $t<$g> {
+        impl<$g, O> std::ops::AddAssign<$t<O>> for $t<$g>
+        where
+            $g: std::ops::AddAssign<O>,
+        {
             fn add_assign(&mut self, other: $t<O>) {
                 self.cjoin_assign(other, |a, b| *a += b);
             }
@@ -100,6 +144,7 @@ macro_rules! impl_c_add_assign {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_add {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
@@ -111,7 +156,10 @@ macro_rules! impl_add {
             }
         }
 
-        $($(impl<$g: std::ops::Add<O>, O> std::ops::Add<$a!(O $(, $p)?)> for $t<$g> {
+        $($(impl<$g, O> std::ops::Add<$a!(O $(, $p)?)> for $t<$g>
+            where
+                $g: std::ops::Add<O>,
+            {
             type Output = $t<$g::Output>;
 
             fn add(self, other: $a!(O $(, $p)?)) -> Self::Output {
@@ -121,10 +169,14 @@ macro_rules! impl_add {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_add_assign {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: std::ops::AddAssign<O>, O> std::ops::AddAssign<$t<O>> for $t<$g> {
+        impl<$g, O> std::ops::AddAssign<$t<O>> for $t<$g>
+        where
+            $g: std::ops::AddAssign<O>,
+        {
             fn add_assign(&mut self, other: $t<O>) {
                 self.0 += other.0
             }
@@ -139,10 +191,11 @@ macro_rules! impl_add_assign {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_c_sub {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: Sub<O>, O> Sub<$t<O>> for $t<$g> {
+        impl<$g: std::ops::Sub<O>, O> std::ops::Sub<$t<O>> for $t<$g> {
             type Output = $t<$g::Output>;
 
             fn sub(self, other: $t<O>) -> Self::Output {
@@ -160,10 +213,14 @@ macro_rules! impl_c_sub {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_c_sub_assign {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: SubAssign<O>, O> SubAssign<$t<O>> for $t<$g> {
+        impl<$g, O> std::ops::SubAssign<$t<O>> for $t<$g>
+        where
+            $g: std::ops::SubAssign<O>,
+        {
             fn sub_assign(&mut self, other: $t<O>) {
                 self.cjoin_assign(other, |a, b| *a -= b);
             }
@@ -177,6 +234,7 @@ macro_rules! impl_c_sub_assign {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_s_mul {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
@@ -190,6 +248,7 @@ macro_rules! impl_s_mul {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_s_mul_assign {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
@@ -203,6 +262,7 @@ macro_rules! impl_s_mul_assign {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_s_div {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
@@ -216,6 +276,7 @@ macro_rules! impl_s_div {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_s_div_assign {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
@@ -229,6 +290,7 @@ macro_rules! impl_s_div_assign {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_s_rem {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
@@ -242,6 +304,7 @@ macro_rules! impl_s_rem {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_s_rem_assign {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
@@ -255,10 +318,11 @@ macro_rules! impl_s_rem_assign {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_c_neg {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: Neg> Neg for $t<$g> {
+        impl<$g: std::ops::Neg> std::ops::Neg for $t<$g> {
             type Output = $t<$g::Output>;
 
             fn neg(self) -> Self::Output {
@@ -268,10 +332,11 @@ macro_rules! impl_c_neg {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_c_not {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
-        impl<$g: Not> Not for $t<$g> {
+        impl<$g: std::ops::Not> std::ops::Not for $t<$g> {
             type Output = $t<$g::Output>;
 
             fn not(self) -> Self::Output {

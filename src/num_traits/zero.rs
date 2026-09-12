@@ -2,6 +2,7 @@ pub trait Zero {
     const ZERO: Self;
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_zero {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {

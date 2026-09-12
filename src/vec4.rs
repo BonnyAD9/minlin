@@ -1,6 +1,6 @@
 use std::{
     fmt::Display,
-    ops::{Add, AddAssign, Index, IndexMut, Mul, Neg, Not, Sub, SubAssign},
+    ops::{Add, AddAssign, Index, IndexMut, Mul, Sub, SubAssign},
 };
 
 use crate::{Array, CompArithm, MapExt, RectExt, Tuple, Vec2, impl_traits};

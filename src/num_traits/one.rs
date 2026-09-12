@@ -2,6 +2,7 @@ pub trait One {
     const ONE: Self;
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_one {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {

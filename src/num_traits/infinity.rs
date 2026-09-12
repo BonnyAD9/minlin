@@ -12,6 +12,7 @@ impl Infinity for f64 {
     const INFINITY: Self = f64::INFINITY;
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_infinity {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {

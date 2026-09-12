@@ -3,6 +3,7 @@ pub trait Scale<T> {
     fn scale(self) -> T;
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_scale {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {

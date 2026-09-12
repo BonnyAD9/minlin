@@ -2,7 +2,7 @@ use std::{
     fmt::Display,
     ops::{
         self, Add, AddAssign, Bound, Div, DivAssign, Index, IndexMut, Mul,
-        Neg, Not, RangeBounds, Rem, Sub, SubAssign,
+        Neg, RangeBounds, Rem, Sub, SubAssign,
     },
     range::Range,
 };

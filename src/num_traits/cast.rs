@@ -6,12 +6,22 @@ pub trait Cast<O> {
     fn cast(self) -> O;
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_cast {
     ($t:ident < $g:ident > $([$(<$a:ident $(, $p:tt)?>),*])?) => {
         impl<$g: $crate::Cast<O>, O> $crate::Cast<$t<O>> for $t<$g> {
             fn cast(self) -> $t<O> {
                 self.map($g::cast)
+            }
+        }
+
+        impl<$g> $t<$g> {
+            pub fn cast_to<O>(self) -> $t<O>
+            where
+                $g: $crate::Cast<O>,
+            {
+                $crate::Cast::<$t<O>>::cast(self)
             }
         }
     };

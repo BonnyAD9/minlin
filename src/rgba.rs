@@ -1,6 +1,8 @@
 use std::ops::{Deref, DerefMut, Mul};
 
-use crate::{Float, MapExt, NormalLimits, Scale, Vec4, impl_traits};
+use crate::{
+    CompArithm, Float, MapExt, NormalLimits, Scale, Vec4, impl_traits,
+};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Rgba<T = u8>(pub Vec4<T>);
@@ -153,6 +155,14 @@ impl<T> Rgba<T> {
     pub fn into_array(self) -> [T; 4] {
         self.0.into()
     }
+
+    /// Construct RGBA where all components have the same value.
+    pub const fn same_components(v: T) -> Self
+    where
+        T: Copy,
+    {
+        Self(Vec4::same_components(v))
+    }
 }
 
 impl<T> Default for Rgba<T>
@@ -203,4 +213,22 @@ impl<T> MapExt for Rgba<T> {
     }
 }
 
-impl_traits!(Rgba<T> => MapTraits);
+impl<T> CompArithm for Rgba<T> {
+    fn cjoin<R, O>(
+        self,
+        other: impl Into<Self::This<O>>,
+        f: impl FnMut(Self::Val, O) -> R,
+    ) -> Self::This<R> {
+        Rgba(self.0.cjoin(other.into().0, f))
+    }
+
+    fn cjoin_assign<O>(
+        &mut self,
+        other: impl Into<Self::This<O>>,
+        f: impl FnMut(&mut Self::Val, O),
+    ) {
+        self.0.cjoin_assign(other.into().0, f);
+    }
+}
+
+impl_traits!(Rgba<T> => VecTraits);

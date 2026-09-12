@@ -2,8 +2,8 @@ use std::{
     fmt::Display,
     mem,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, Neg, Not, Rem,
-        Sub, SubAssign,
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, Neg, Rem, Sub,
+        SubAssign,
     },
 };
 

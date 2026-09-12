@@ -1,6 +1,6 @@
 use std::ops::{Add, AddAssign, Deref, DerefMut, Sub, SubAssign};
 
-use crate::{MapExt, Rect, Vec2, Vec4, Zero};
+use crate::{MapExt, Rect, Vec2, Vec4, Zero, impl_traits};
 
 /// Type that represents padding.
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Default, Hash)]
@@ -226,3 +226,5 @@ where
         self.0 -= rhs.0
     }
 }
+
+impl_traits!(Padding<T> => MapTraits);
