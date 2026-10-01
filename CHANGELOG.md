@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## future
+## v0.5.2
 ### New features
 - New helper methods `cast_to` and `convert_to` for all types that implement
   `Cast` and `Convert`.
